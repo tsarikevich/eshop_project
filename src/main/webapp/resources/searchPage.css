@@ -1,0 +1,17 @@
+div [id=filter] {
+    margin: 0;
+    padding: 10px;
+    /*position: absolute;*/
+    left: 0;
+    top: 0;
+    width: 20%;
+}
+
+div[id=findedProducts] {
+    margin: 0;
+    padding: 10px;
+    /*position: absolute;*/
+    right: 0;
+    top: 0;
+    width: 50%;
+}
