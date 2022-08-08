@@ -1,1 +1,2 @@
-# eshop_project (spring boot, spring security, spring data jpa)
+# eshop_project 
+(spring boot, spring security, spring data jpa)
