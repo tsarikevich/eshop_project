@@ -27,7 +27,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
+@Table(name = "ORDERS")
 public class Order extends BaseEntity {
     @CsvBindByName
     @Column(name = "PRICE")
@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
     private User user;
     @CsvBindByName
     @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyJoinColumn(name = "PRODUCT_ID")
+    @MapKeyJoinColumn(table ="ORDER_PRODUCTS", name = "PRODUCT_ID")
     @Column(name = "QUANTITY", nullable = false)
     private Map<Product, Integer> products = new HashMap<>();
 

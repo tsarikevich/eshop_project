@@ -19,9 +19,9 @@ import java.util.Set;
 @Setter
 @Entity
 @ToString
-@Table(name = "roles")
+@Table(name = "ROLES")
 public class Role extends BaseEntity implements GrantedAuthority {
-    @Column(name = "ROLE",unique = true)
+    @Column(name = "NAME",unique = true)
     private String role;
 
     @ManyToMany(mappedBy = "roles")

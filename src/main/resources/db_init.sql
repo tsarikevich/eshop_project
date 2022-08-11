@@ -1,125 +1,154 @@
-# --------------------------------------------------------
-# --  DDL for schema ESHOP
-# --------------------------------------------------------
-# DROP SCHEMA IF EXISTS ESHOP;
-# CREATE SCHEMA IF NOT EXISTS ESHOP;
-#
-# --------------------------------------------------------
-# --  DDL for Table CATEGORY
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.CATEGORIES;
-# CREATE TABLE IF NOT EXISTS ESHOP.CATEGORIES
-# (
-#     ID     INT         NOT NULL AUTO_INCREMENT,
-#     NAME   VARCHAR(45) NOT NULL,
-#     RATING DOUBLE      NOT NULL,
-#     PRIMARY KEY (ID),
-#     UNIQUE INDEX IDX_CATEGORIES_CATEGORY_ID_UNIQUE (ID ASC),
-#     UNIQUE INDEX IDX_CATEGORIES_NAME_UNIQUE (NAME ASC)
-# );
-# --------------------------------------------------------
-# --  DDL for Table PRODUCTS
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.PRODUCTS;
-# CREATE TABLE IF NOT EXISTS ESHOP.PRODUCTS
-# (
-#     ID          INT          NOT NULL AUTO_INCREMENT,
-#     NAME        VARCHAR(200) NOT NULL,
-#     DESCRIPTION VARCHAR(400) NOT NULL,
-#     PRICE       DECIMAL      NOT NULL,
-#     CATEGORY_ID INT          NOT NULL,
-#     PRIMARY KEY (ID),
-#     UNIQUE INDEX IDX_PRODUCTS_ID_UNIQUE (ID ASC),
-#     CONSTRAINT FK_PRODUCTS_CATEGORY_ID_CATEGORIES_ID
-#         FOREIGN KEY (CATEGORY_ID) references ESHOP.CATEGORIES (ID)
-#             ON DELETE CASCADE
-#             ON UPDATE CASCADE
-# );
-# --------------------------------------------------------
-# --  DDL for Table USERS
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.USERS;
-# CREATE TABLE IF NOT EXISTS ESHOP.USERS
-# (
-#     ID            INT          NOT NULL AUTO_INCREMENT,
-#     LOGIN         VARCHAR(50)  NOT NULL,
-#     NAME          VARCHAR(100) NOT NULL,
-#     SURNAME       VARCHAR(200) NOT NULL,
-#     PASSWORD      VARCHAR(100) NOT NULL,
-#     DATE_OF_BIRTH DATE         NOT NULL,
-#     EMAIL         VARCHAR(100) NOT NULL,
-#     BALANCE       DECIMAL,
-#     PRIMARY KEY (ID),
-#     UNIQUE INDEX IDX_USERS_USER_ID_UNIQUE (ID ASC),
-#     UNIQUE INDEX IDX_USERS_LOGIN_UNIQUE (LOGIN ASC),
-#     UNIQUE INDEX IDX_USERS_EMAIL_UNIQUE (EMAIL ASC)
-# );
-# --------------------------------------------------------
-# --  DDL for Table ORDERS
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.ORDERS;
-# CREATE TABLE IF NOT EXISTS ESHOP.ORDERS
-# (
-#     ID      INT      NOT NULL AUTO_INCREMENT,
-#     PRICE   DECIMAL  NOT NULL,
-#     DATE    DATETIME NOT NULL,
-#     USER_ID INT      NOT NULL,
-#     PRIMARY KEY (ID),
-#     UNIQUE INDEX IDX_ORDERS_ID_UNIQUE (ID ASC),
-#     CONSTRAINT FK_ORDERS_USER_ID_USERS_ID
-#         FOREIGN KEY (USER_ID) references ESHOP.USERS (ID)
-#             ON DELETE CASCADE
-#             ON UPDATE CASCADE
-# );
-# --------------------------------------------------------
-# --  DDL for Table PRODUCT_IMAGES
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.IMAGES;
-# CREATE TABLE IF NOT EXISTS ESHOP.IMAGES
-# (
-#     ID           INT          NOT NULL AUTO_INCREMENT,
-#     CATEGORY_ID  INT,
-#     PRODUCT_ID   INT,
-#     PRIMARY_FLAG BOOLEAN      NOT NULL,
-#     IMAGE_PATH   VARCHAR(200) NOT NULL,
-#     PRIMARY KEY (ID),
-#     CONSTRAINT FK_IMAGES_CATEGORY_ID_CATEGORIES_ID
-#         FOREIGN KEY (CATEGORY_ID) references ESHOP.CATEGORIES (ID),
-#     CONSTRAINT FK_IMAGES_PRODUCT_ID_PRODUCTS_ID
-#         FOREIGN KEY (PRODUCT_ID) REFERENCES ESHOP.PRODUCTS (ID)
-#             ON DELETE CASCADE
-#             ON UPDATE CASCADE
-# );
-# --------------------------------------------------------
-# --  DDL for Table ORDER_PRODUCTS
-# --------------------------------------------------------
-# DROP TABLE IF EXISTS ESHOP.ORDER_PRODUCTS;
-# CREATE TABLE IF NOT EXISTS ESHOP.ORDER_PRODUCTS
-# (
-#     ORDER_ID        INT NOT NULL,
-#     PRODUCT_ID      INT NOT NULL,
-#     QUANTITY INT NOT NULL,
-#     PRIMARY KEY (ORDER_ID, PRODUCT_ID),
-#     CONSTRAINT FK_ORDERS_PRODUCTS_ORDER_ID_ORDERS_ID
-#         FOREIGN KEY (ORDER_ID)
-#             REFERENCES ORDERS (ID)
-#             ON DELETE CASCADE
-#             ON UPDATE CASCADE,
-#     CONSTRAINT FK_ORDERS_PRODUCTS_PRODUCT_ID_PRODUCTS_ID
-#         FOREIGN KEY (PRODUCT_ID)
-#             REFERENCES PRODUCTS (ID)
-#             ON DELETE CASCADE
-#             ON UPDATE CASCADE
-# );
---------------------------------------------------------
---  DML for Table ESHOP.ROLES
---------------------------------------------------------
-INSERT INTO ESHOP.ROLES (ID, ROLE) VALUES (1,'ROLE_ADMIN');
-INSERT INTO ESHOP.ROLES (ID, ROLE) VALUES (2,'ROLE_USER');
-INSERT INTO ESHOP.ROLES (ID, ROLE) VALUES (3,'ROLE_ANONYMOUS');
---------------------------------------------------------
+#--------------------------------------------------------
+--  DDL for schema ESHOP
+#--------------------------------------------------------
+DROP SCHEMA IF EXISTS ESHOP;
+CREATE SCHEMA IF NOT EXISTS ESHOP;
+
+#--------------------------------------------------------
+--  DDL for Table CATEGORY
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.CATEGORIES;
+CREATE TABLE IF NOT EXISTS ESHOP.CATEGORIES
+(
+    ID     INT         NOT NULL AUTO_INCREMENT,
+    NAME   VARCHAR(45) NOT NULL,
+    RATING DOUBLE      NOT NULL,
+    PRIMARY KEY (ID),
+    UNIQUE INDEX IDX_CATEGORIES_CATEGORY_ID_UNIQUE (ID ASC),
+    UNIQUE INDEX IDX_CATEGORIES_NAME_UNIQUE (NAME ASC)
+);
+#--------------------------------------------------------
+--  DDL for Table PRODUCTS
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.PRODUCTS;
+CREATE TABLE IF NOT EXISTS ESHOP.PRODUCTS
+(
+    ID          INT          NOT NULL AUTO_INCREMENT,
+    NAME        VARCHAR(200) NOT NULL,
+    DESCRIPTION VARCHAR(400) NOT NULL,
+    PRICE       DECIMAL      NOT NULL,
+    CATEGORY_ID INT          NOT NULL,
+    PRIMARY KEY (ID),
+    UNIQUE INDEX IDX_PRODUCTS_ID_UNIQUE (ID ASC),
+    UNIQUE INDEX IDX_NAME_UNIQUE (NAME ASC),
+    CONSTRAINT FK_PRODUCTS_CATEGORY_ID_CATEGORIES_ID
+        FOREIGN KEY (CATEGORY_ID) references ESHOP.CATEGORIES (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+#--------------------------------------------------------
+--  DDL for Table USERS
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.USERS;
+CREATE TABLE IF NOT EXISTS ESHOP.USERS
+(
+    ID            INT          NOT NULL AUTO_INCREMENT,
+    LOGIN         VARCHAR(50)  NOT NULL,
+    NAME          VARCHAR(100) NOT NULL,
+    SURNAME       VARCHAR(200) NOT NULL,
+    PASSWORD      VARCHAR(100) NOT NULL,
+    DATE_OF_BIRTH DATE         NOT NULL,
+    EMAIL         VARCHAR(100) NOT NULL,
+    BALANCE       DECIMAL,
+    PRIMARY KEY (ID),
+    UNIQUE INDEX IDX_USERS_USER_ID_UNIQUE (ID ASC),
+    UNIQUE INDEX IDX_USERS_LOGIN_UNIQUE (LOGIN ASC),
+    UNIQUE INDEX IDX_USERS_EMAIL_UNIQUE (EMAIL ASC)
+);
+#--------------------------------------------------------
+--  DDL for Table ORDERS
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.ORDERS;
+CREATE TABLE IF NOT EXISTS ESHOP.ORDERS
+(
+    ID      INT      NOT NULL AUTO_INCREMENT,
+    PRICE   DECIMAL  NOT NULL,
+    DATE    DATETIME NOT NULL,
+    USER_ID INT      NOT NULL,
+    PRIMARY KEY (ID),
+    UNIQUE INDEX IDX_ORDERS_ID_UNIQUE (ID ASC),
+    CONSTRAINT FK_ORDERS_USER_ID_USERS_ID
+        FOREIGN KEY (USER_ID) references ESHOP.USERS (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+#--------------------------------------------------------
+--  DDL for Table PRODUCT_IMAGES
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.IMAGES;
+CREATE TABLE IF NOT EXISTS ESHOP.IMAGES
+(
+    ID           INT          NOT NULL AUTO_INCREMENT,
+    CATEGORY_ID  INT,
+    PRODUCT_ID   INT,
+    PRIMARY_FLAG BOOLEAN      NOT NULL,
+    IMAGE_PATH   VARCHAR(200) NOT NULL,
+    PRIMARY KEY (ID),
+    CONSTRAINT FK_IMAGES_CATEGORY_ID_CATEGORIES_ID
+        FOREIGN KEY (CATEGORY_ID) references ESHOP.CATEGORIES (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT FK_IMAGES_PRODUCT_ID_PRODUCTS_ID
+        FOREIGN KEY (PRODUCT_ID) REFERENCES ESHOP.PRODUCTS (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+#--------------------------------------------------------
+--  DDL for Table ORDER_PRODUCTS
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.ORDER_PRODUCTS;
+CREATE TABLE IF NOT EXISTS ESHOP.ORDER_PRODUCTS
+(
+    ORDER_ID   INT NOT NULL,
+    PRODUCT_ID INT NOT NULL,
+    QUANTITY   INT NOT NULL,
+    PRIMARY KEY (ORDER_ID, PRODUCT_ID),
+    CONSTRAINT FK_ORDER_PRODUCTS_ORDER_ID_ORDERS_ID
+        FOREIGN KEY (ORDER_ID)
+            REFERENCES ORDERS (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT FK_ORDER_PRODUCTS_PRODUCT_ID_PRODUCTS_ID
+        FOREIGN KEY (PRODUCT_ID)
+            REFERENCES PRODUCTS (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+#--------------------------------------------------------
+--  DDL for Table ROLES
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.ROLES;
+CREATE TABLE IF NOT EXISTS ESHOP.ROLES
+(
+    ID   INT         NOT NULL AUTO_INCREMENT,
+    NAME VARCHAR(45) NOT NULL,
+    PRIMARY KEY (ID),
+    UNIQUE INDEX IDX_ROLES_ROLE_ID_UNIQUE (ID ASC),
+    UNIQUE INDEX IDX_ROLES_NAME_UNIQUE (NAME ASC)
+);
+#--------------------------------------------------------
+--  DDL for Table USERS_ROLES
+#--------------------------------------------------------
+DROP TABLE IF EXISTS ESHOP.USER_ROLES;
+CREATE TABLE IF NOT EXISTS ESHOP.USER_ROLES
+(
+    USER_ID INT NOT NULL,
+    ROLE_ID INT NOT NULL,
+    PRIMARY KEY (USER_ID, ROLE_ID),
+    CONSTRAINT FK_USER_PRODUCTS_USER_ID_USERS_ID
+        FOREIGN KEY (USER_ID)
+            REFERENCES USERS (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT FK_USER_ROLES_ROLE_ID_ROLES_ID
+        FOREIGN KEY (ROLE_ID)
+            REFERENCES ROLES (ID)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+);
+#--------------------------------------------------------
 --  DML for Table ESHOP.CATEGORIES
---------------------------------------------------------
+#--------------------------------------------------------
 
 INSERT INTO ESHOP.CATEGORIES (ID, NAME, RATING)
 VALUES (1, 'Mobile phones', 5);
@@ -133,9 +162,9 @@ INSERT INTO ESHOP.CATEGORIES (ID, NAME, RATING)
 VALUES (5, 'Cars', 5);
 INSERT INTO ESHOP.CATEGORIES (ID, NAME, RATING)
 VALUES (6, 'Cameras', 5);
---------------------------------------------------------
+#--------------------------------------------------------
 --  DML for Table ESHOP.PRODUCTS
---------------------------------------------------------
+#--------------------------------------------------------
 INSERT INTO ESHOP.PRODUCTS (ID, NAME, DESCRIPTION, PRICE, CATEGORY_ID)
 VALUES (1, 'Смартфон Apple iPhone 13 128GB (темная ночь)',
         'Apple iOS, экран 6.1'''' OLED (1170x2532), Apple A15 Bionic, ОЗУ 4 ГБ, флэш-память 128 ГБ, камера 12 Мп, аккумулятор 3227 мАч, 1 SIM',
@@ -179,7 +208,7 @@ VALUES (11, 'Зеркальный фотоаппарат Canon EOS 4000D Kit 18-
 INSERT INTO ESHOP.PRODUCTS (ID, NAME, DESCRIPTION, PRICE, CATEGORY_ID)
 VALUES (12, 'Зеркальный фотоаппарат Nikon D5600 Kit 18-55mm AF-P DX VR',
         'Зеркальный фотоаппарат Nikon D5600 Kit 18-55mm AF-P DX VR', 2550, 6);
---------------------------------------------------------
+#--------------------------------------------------------
 --  DML for Table ESHOP.IMAGES
 # --------------------------------------------------------
 INSERT INTO ESHOP.IMAGES(CATEGORY_ID, PRIMARY_FLAG, IMAGE_PATH)
@@ -218,52 +247,58 @@ INSERT INTO ESHOP.IMAGES(CATEGORY_ID, PRODUCT_ID, PRIMARY_FLAG, IMAGE_PATH)
 values (6, 11, 1, 'cameraCanon.jpg');
 INSERT INTO ESHOP.IMAGES(CATEGORY_ID, PRODUCT_ID, PRIMARY_FLAG, IMAGE_PATH)
 values (6, 12, 1, 'cameraNikon.jpg');
---------------------------------------------------------
+#--------------------------------------------------------
 --  DML for Table ESHOP.USERS
---------------------------------------------------------
+#--------------------------------------------------------
 INSERT INTO `eshop`.`users` (LOGIN, NAME, SURNAME, PASSWORD, DATE_OF_BIRTH, EMAIL)
-VALUES ('max', 'max', 'max', '1234', NOW(), 'max@mail.by');
+VALUES ('max', 'max', 'max', '$2a$10$y8clbYmew8wmGPIebWW2OOavse0v1AOMb39L9n/t0SJ.avbvmtBtq', NOW(), 'max@mail.by');
 INSERT INTO `eshop`.`users` (LOGIN, NAME, SURNAME, PASSWORD, DATE_OF_BIRTH, EMAIL)
-VALUES ('max1', 'max1', 'max', '1234', NOW(), 'max1@mail.by');
-
---------------------------------------------------------
+VALUES ('max1', 'max1', 'max1', '$2a$10$y8clbYmew8wmGPIebWW2OOavse0v1AOMb39L9n/t0SJ.avbvmtBtq', NOW(), 'max1@mail.by');
+#--------------------------------------------------------
+--  DML for Table ESHOP.ROLES
+#--------------------------------------------------------
+INSERT INTO ESHOP.ROLES (ID, NAME)
+VALUES (1, 'ROLE_ADMIN');
+INSERT INTO ESHOP.ROLES (ID, NAME)
+VALUES (2, 'ROLE_USER');
+#--------------------------------------------------------
 --  DML for Table ESHOP.USER_ROLES
---------------------------------------------------------
-INSERT INTO eshop.users_roles (users_id, roles_id) VALUES (1,1);
-INSERT INTO eshop.users_roles (users_id, roles_id) VALUES (2,2);
-INSERT INTO eshop.users_roles (users_id, roles_id) VALUES (3,3);
---------------------------------------------------------
+#--------------------------------------------------------
+INSERT INTO ESHOP.USER_ROLES (USER_ID, ROLE_ID)
+VALUES (1, 1);
+INSERT INTO ESHOP.USER_ROLES (USER_ID, ROLE_ID)
+VALUES (2, 2);
+#--------------------------------------------------------
 --  DML for Table ESHOP.ORDERS
---------------------------------------------------------
-INSERT INTO `eshop`.`orders` (`PRICE`, `DATE`, `USER_ID`)
+#--------------------------------------------------------
+INSERT INTO ESHOP.ORDERS (`PRICE`, `DATE`, `USER_ID`)
 VALUES ('2000', NOW(), '1');
-INSERT INTO `eshop`.`orders` (`PRICE`, `DATE`, `USER_ID`)
+INSERT INTO ESHOP.ORDERS (`PRICE`, `DATE`, `USER_ID`)
 VALUES ('2000', NOW(), '2');
-INSERT INTO `eshop`.`orders` (`PRICE`, `DATE`, `USER_ID`)
+INSERT INTO ESHOP.ORDERS (`PRICE`, `DATE`, `USER_ID`)
 VALUES ('2000', NOW(), '1');
-INSERT INTO `eshop`.`orders` (`PRICE`, `DATE`, `USER_ID`)
+INSERT INTO ESHOP.ORDERS (`PRICE`, `DATE`, `USER_ID`)
 VALUES ('2000', NOW(), '2');
---------------------------------------------------------
+#--------------------------------------------------------
 --  DML for Table ESHOP.ORDER_PRODUCTS
---------------------------------------------------------
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+#--------------------------------------------------------
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('1', '1', '1');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('1', '3', '2');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('1', '4', '1');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('1', '5', '5');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('2', '3', '1');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('2', '7', '2');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('3', '1', '2');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('3', '2', '2');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('4', '7', '1');
-INSERT INTO `eshop`.`order_products` (ORDER_ID, PRODUCT_ID, QUANTITY)
+INSERT INTO ESHOP.ORDER_PRODUCTS (ORDER_ID, PRODUCT_ID, QUANTITY)
 VALUES ('4', '8', '3');
-

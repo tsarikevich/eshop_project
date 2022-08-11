@@ -25,13 +25,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "products")
+@Table(name = "PRODUCTS")
 public class Product extends BaseEntity {
     @CsvBindByName
     @Column(name = "NAME",unique = true)
     private String name;
     @CsvBindByName
-    @Column(name = "DESCRIPTION", columnDefinition = "varchar(500)")
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(400)")
     private String description;
     @CsvBindByName
     @Column(name = "PRICE")

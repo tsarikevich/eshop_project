@@ -22,7 +22,7 @@ import java.util.Objects;
 @Entity
 @ToString
 @SuperBuilder
-@Table(name = "categories")
+@Table(name = "CATEGORIES")
 public class Category extends BaseEntity {
     @CsvBindByName
     @Column(name = "NAME",unique = true)

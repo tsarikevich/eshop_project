@@ -20,7 +20,7 @@ import java.util.Objects;
 @Entity
 @ToString
 @SuperBuilder
-@Table(name = "images")
+@Table(name = "IMAGES")
 public class Image extends BaseEntity {
     @CsvBindByName
     @Column(name = "PRIMARY_FLAG")

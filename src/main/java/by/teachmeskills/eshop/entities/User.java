@@ -13,6 +13,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,7 +34,7 @@ import java.util.Set;
 @Setter
 @Entity
 @ToString
-@Table(name = "users")
+@Table(name = "USERS")
 public class User extends BaseEntity implements UserDetails{
     @CsvBindByName
     @NotEmpty(message = "Login must not be empty")
@@ -64,7 +66,9 @@ public class User extends BaseEntity implements UserDetails{
     @ToString.Exclude
     private List<Order> orders;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_ROLES", joinColumns ={@JoinColumn(name = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     @ToString.Exclude
     private Set<Role> roles;
 
