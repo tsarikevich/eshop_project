@@ -18,7 +18,7 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
 
     @Query("select distinct i from Image i where i.product.id in (select key(o.products).id from Order o where o.user.id=?1) and i.primaryFlag = true")
     List<Image> getImagesByPrimaryFlagAndUserId(int userId);
-
+    @Query("select distinct i from Image i where i.category.id=?1 and i.product is not null")
     List<Image> getImagesByCategoryId(int Id);
 
     List<Image> getImagesByProductIn(List<Product> products);

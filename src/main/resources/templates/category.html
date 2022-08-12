@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Products</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<ul class="TopNavMenu">
+    <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
+    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+        Корзина</a></li>
+    <li style="float:right"><a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>
+        Пользователь</a></li>
+    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+        Поиск</a></li>
+</ul>
+<h2 style="padding-top: 16px" th:text="${nameCategory}"></h2><br>
+<select onchange="location=value">
+    <option selected th:text="${pageSize}"></option>
+    <option th:value="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber=0&pageSize=3'}"
+            th:text="3"></option>
+    <option th:value="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber=0&pageSize=5'}"
+            th:text="5"></option>
+    <option th:value="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber=0&pageSize=10'}"
+            th:text="10"></option>
+    <option th:value="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber=0&pageSize=15'}"
+            th:text="15"></option>
+</select>
+<div class="container-fluid">
+    <th:block th:if="${not #lists.isEmpty(products)}">
+        <th:block th:each="product:${products}">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-1" style="background-color:white;">
+                        <th:block th:each="image:${productsImages}">
+                            <th:block th:if="${product.getId()==image.product.getId()}">
+                                <a th:href="@{'/product/'+${product.getId()}}">
+                                    <img th:src="@{'/images/'+${image.getImagePath()}}"
+                                         th:alt="${image.getImagePath()}" class="responsive"></a>
+                            </th:block>
+                        </th:block>
+                    </div>
+                    <div class="col" style="background-color:white;">
+                        <p><b class="font-italic">Модель:</b> [[${product.getName()}]]</p>
+                        <p><b class="font-italic">Описание:</b> [[${product.getDescription()}]]</p>
+                        <p><b class="font-italic">Цена:</b> [[${product.getPrice()}]] руб.</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </th:block>
+        <div sec:authorize="hasRole('ADMIN')">
+            <form method="POST" enctype="multipart/form-data"
+                  th:action="@{'/category/upload?categoryId='+${categoryId}+'&nameCategory='+${nameCategory}+'&pageNumber=0&pageSize='+${pageSize}}">
+                File to upload:
+                <input type="file" value="Select" name="file"><br/>
+                <button type="submit"><i class="fa fa-upload fa-lg">Upload CSV File</i></button>
+            </form>
+        </div>
+        <br>
+        <div sec:authorize="isAuthenticated()">
+            <a style="text-decoration: none"
+               th:href="@{'/category/download?categoryId='+${categoryId}}">
+                <button><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Download CSV File</button>
+            </a>
+        </div>
+        <nav aria-label>
+            <ul class="pagination justify-content-center">
+                <th:block th:switch="${isFirstPage}">
+                    <li th:case="false" class="page-item"><a class="page-link"
+                                                             th:href="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber='+${pageNumber-1}+'&pageSize='+${pageSize}}">Предыдущая</a>
+                    </li>
+                    <li th:case="true" class="page-item disabled"><a class="page-link">Предыдущая</a>
+                    </li>
+                </th:block>
+                <th:block th:each="i: ${#numbers.sequence(0, totalPages-1)}">
+                    <th:block th:switch="${pageNumber eq i}">
+                        <li th:case="true" class="page-item">
+                            <a class="page-link active" th:text="${i+1}"></a>
+                        </li>
+                        <li th:case="false" class="page-item">
+                            <a class="page-link"
+                               th:href="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber='+${i}+'&pageSize='+${pageSize}}"
+                               th:text="${i+1}"></a>
+                        </li>
+                    </th:block>
+                </th:block>
+                <th:block th:switch="${isLastPage}">
+                    <li th:case="false" class="page-item"><a class="page-link"
+                                                             th:href="@{'/category/'+${nameCategory}+'/'+${categoryId}+'?pageNumber='+${pageNumber+1}+'&pageSize='+${pageSize}}">Следующая</a>
+                    </li>
+                    <li th:case="true" class="page-item disabled"><a class="page-link">Следующая</a>
+                    </li>
+                </th:block>
+            </ul>
+        </nav>
+    </th:block>
+</div>
+</body>
+</html>
+
+

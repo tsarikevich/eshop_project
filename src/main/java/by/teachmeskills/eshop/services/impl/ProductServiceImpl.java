@@ -9,6 +9,7 @@ import by.teachmeskills.eshop.repositories.ImageRepository;
 import by.teachmeskills.eshop.repositories.ProductRepository;
 import by.teachmeskills.eshop.repositories.ProductSearchSpecification;
 import by.teachmeskills.eshop.services.ProductService;
+import by.teachmeskills.eshop.services.UserService;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -53,6 +54,7 @@ import static by.teachmeskills.eshop.utils.RequestParamsEnum.PRODUCTS;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.PRODUCTS_FROM_SEARCH;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.PRODUCTS_IMAGES;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.SEARCH_PARAMS;
+import static by.teachmeskills.eshop.utils.RequestParamsEnum.USER;
 
 @Service
 @Log4j
@@ -60,11 +62,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ImageRepository imageRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ImageRepository imageRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ImageRepository imageRepository, CategoryRepository categoryRepository, UserService userService) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
         this.categoryRepository = categoryRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -91,6 +95,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ModelAndView showSearchProductPage() {
         ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute(USER.getValue(), userService.getAuthorizationUserOrNull());
         modelMap.addAttribute(ACTIVE_BUTTON_NAV_MENU.getValue(), true);
         return new ModelAndView(SEARCH_PAGE.getPath(), modelMap);
     }
@@ -130,6 +135,7 @@ public class ProductServiceImpl implements ProductService {
         Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("name"));
         Page<Product> productsPage = productRepository.findAll(productSearchSpecification, paging);
         List<Image> images = imageRepository.getImagesByProductIn(productsPage.getContent());
+        modelMap.addAttribute(USER.getValue(), userService.getAuthorizationUserOrNull());
         modelMap.addAttribute(IMAGES_FROM_SEARCH.getValue(), images);
         modelMap.addAttribute(PRODUCTS_FROM_SEARCH.getValue(), productsPage.getContent());
         modelMap.addAttribute(PAGE_NUMBER, pageNumber);

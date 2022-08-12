@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((auth) -> {
                     try {
                         auth
-                                .antMatchers("/webapp/WEB-INF/**", "/")
+                                .antMatchers("/resources/**", "/")
                                 .permitAll()
                                 .antMatchers("/profile/**")
                                 .authenticated()
@@ -38,13 +38,13 @@ public class WebSecurityConfig {
                                 .defaultSuccessUrl("/home").failureUrl("/login?error")
                                 .permitAll()
                                 .and()
-                                .rememberMe()
-                                .alwaysRemember(true)
-                                .and()
                                 .logout()
                                 .invalidateHttpSession(true)
                                 .clearAuthentication(true)
                                 .permitAll();
+//                                .and()
+//                                .anonymous()
+//                                .disable();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

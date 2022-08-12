@@ -1,14 +1,12 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Product</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="/resources/style.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -19,26 +17,25 @@
     </script>
 </head>
 <body>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <ul class="TopNavMenu">
-    <li><a href='/home'><i class="fa fa-fw fa-home"></i> Главная</a></li>
-    <li style="float:right"><a href='/cart'><i class="fa fa-fw fa-shopping-cart"></i>
+    <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
+    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
         Корзина</a></li>
-    <li style="float:right"><a href='/profile'><i class="fa fa-fw fa-user"></i>
+    <li style="float:right"><a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>
         Пользователь</a></li>
-    <li style="float:right"><a href='/search'><i class="fa fa-fw fa-search"></i>
+    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
         Поиск</a></li>
 </ul>
-<c:if test="${not empty oneProduct}">
+<th:block th:if="${not #lists.isEmpty(oneProduct)}">
     <div class="container-fluid">
-        <h2 class="text-center" style="padding-top: 16px">${oneProduct.getName()}</h2><br>
-        <c:forEach items="${oneProductImages}" var="image">
-            <c:if test="${oneProduct.getId()==image.product.getId()}">
+        <h2 class="text-center" style="padding-top: 16px" th:text="${oneProduct.getName()}"></h2><br>
+        <th:block th:each="image:${oneProductImages}">
+            <th:block th:if="${oneProduct.getId()==image.product.getId()}">
                 <img class="mx-auto d-block" style="height:auto; max-width: 400px;"
-                     src="${contextPath}/images/${image.getImagePath()}"
-                     alt="${image.getImagePath()}">
-            </c:if>
-        </c:forEach>
+                     th:src="@{'/images/'+${image.getImagePath()}}"
+                     th:alt="${image.getImagePath()}">
+            </th:block>
+        </th:block>
         <br>
         <div class="container">
             <h2>Информация о продукте:</h2>
@@ -51,22 +48,21 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>${oneProduct.getDescription()}</td>
-                    <td class="text-center" style="vertical-align: middle">${oneProduct.getPrice()}</td>
+                    <td th:text="${oneProduct.getDescription()}"></td>
+                    <td class="text-center" style="vertical-align: middle" th:text="${oneProduct.getPrice()}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <br>
         <a style="text-decoration: none"
-           href="${contextPath}/cart/add?productId=${oneProduct.getId()}">
+           th:href="@{'/cart/add?productId='+${oneProduct.getId()}}">
             <button class="buttonAddProduct" type="submit" onclick="productAddedToShoppingCartMsg()"><i
                     class="fa fa-cart-plus fa-lg" style="padding-right: 5px"></i>Купить
             </button>
         </a>
-
         <br>
     </div>
-</c:if>
+</th:block>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class CategoryController {
     public ModelAndView openCategoryProductPage(@PathVariable String categoryName,
                                                 @PathVariable int categoryId,
                                                 @RequestParam(value = PAGE_NUMBER, defaultValue = "0") int pageNumber,
-                                                @RequestParam(value = PAGE_SIZE, defaultValue = "10") int pageSize) {
+                                                @RequestParam(value = PAGE_SIZE, defaultValue = "3") int pageSize) {
         return productService.getCategoryProductsData(categoryId, categoryName, pageNumber, pageSize);
     }
 

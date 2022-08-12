@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Home page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<ul class="TopNavMenu">
+    <th:block th:switch="${activeButtonNavMenu}">
+        <li th:case="true"><a class="active" th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
+        <li th:case="false"><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
+    </th:block>
+    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+        Корзина</a></li>
+    <div sec:authorize="isAnonymous()">
+        <li style="float:right">
+            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
+        </li>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+        <li style="float:right">
+            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${user.getLogin()}]]</a>
+        </li>
+    </div>
+    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+        Поиск</a></li>
+</ul>
+<h2 style="padding-top: 16px">Popular categories</h2>
+<div class="container-fluid">
+    <th:block th:if="${not #lists.isEmpty(categories)}">
+        <div class="row">
+            <th:block th:each="category:${categories}">
+                <div class="card w-25 m-1" type="category">
+                    <div class="card-body">
+                        <th:block th:text=${category.getName()}></th:block>
+                        <th:block th:each="image:${categoriesImages}">
+                            <th:block th:if="${category.getId()==image.category.getId()}">
+                                <a th:href="@{'/category/'+${category.getName()}+'/'+${category.getId()}}">
+                                    <img class="card-img"
+                                         style="width:150px;height:120px"
+                                         th:src="@{'/images/'+${image.getImagePath()}}"
+                                         alt="Card image"></a>
+                            </th:block>
+                        </th:block>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </th:block>
+</div>
+<div sec:authorize="hasRole('ADMIN')">
+    <form method="POST" enctype="multipart/form-data" th:action="@{'/home/upload'}">
+        File to upload:
+        <input type="file" value="Select" name="file"><br/>
+        <button type="submit"><i class="fa fa-upload fa-lg">Upload CSV File</i></button>
+    </form>
+</div>
+<div sec:authorize="isAuthenticated()">
+    <a style="text-decoration: none"
+       th:href="@{'/home/download'}">
+        <button><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Download CSV File</button>
+    </a>
+</div>
+</body>
+</html>
+

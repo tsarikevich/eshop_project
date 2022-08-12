@@ -1,5 +1,5 @@
 body {
-    background: url("/images/background1.jpg") repeat;
+    background: url("/static/images/background1.jpg") repeat;
 }
 
 span.error {

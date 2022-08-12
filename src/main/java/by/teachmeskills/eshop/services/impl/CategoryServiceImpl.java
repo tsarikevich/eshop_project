@@ -2,9 +2,11 @@ package by.teachmeskills.eshop.services.impl;
 
 import by.teachmeskills.eshop.entities.Category;
 import by.teachmeskills.eshop.entities.Image;
+import by.teachmeskills.eshop.entities.User;
 import by.teachmeskills.eshop.repositories.CategoryRepository;
 import by.teachmeskills.eshop.repositories.ImageRepository;
 import by.teachmeskills.eshop.services.CategoryService;
+import by.teachmeskills.eshop.services.UserService;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -13,6 +15,8 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.log4j.Log4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,16 +35,19 @@ import static by.teachmeskills.eshop.utils.PagesPathEnum.HOME_PAGE;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.ACTIVE_BUTTON_NAV_MENU;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.CATEGORIES;
 import static by.teachmeskills.eshop.utils.RequestParamsEnum.CATEGORIES_IMAGES;
+import static by.teachmeskills.eshop.utils.RequestParamsEnum.USER;
 
 @Service
 @Log4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    private final UserService userService;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ImageRepository imageRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ImageRepository imageRepository, UserService userService) {
         this.categoryRepository = categoryRepository;
         this.imageRepository = imageRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -69,6 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
         ModelMap modelMap = new ModelMap();
         List<Category> categories = read();
         List<Image> categoriesImages = imageRepository.getImagesByProductExists();
+        modelMap.addAttribute(USER.getValue(), userService.getAuthorizationUserOrNull());
         modelMap.addAttribute(CATEGORIES.getValue(), categories);
         modelMap.addAttribute(ACTIVE_BUTTON_NAV_MENU.getValue(), true);
         modelMap.addAttribute(CATEGORIES_IMAGES.getValue(), categoriesImages);

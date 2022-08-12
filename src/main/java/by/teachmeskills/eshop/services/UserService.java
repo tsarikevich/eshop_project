@@ -14,4 +14,6 @@ public interface UserService extends BaseService<User> {
     void writeProfileToCsv(Writer writer);
 
     void writeOrderToCsv(int orderId, Writer writer);
+
+    User getAuthorizationUserOrNull();
 }

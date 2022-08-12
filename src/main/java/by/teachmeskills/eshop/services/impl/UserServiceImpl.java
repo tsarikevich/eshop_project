@@ -15,6 +15,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.log4j.Log4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -152,6 +153,18 @@ public class UserServiceImpl implements UserService {
             beanToCsv.write(order);
         } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public User getAuthorizationUserOrNull() {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        boolean auth=authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ANONYMOUS"));
+        if (!auth) {
+            return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } else {
+            log.info("An unauthorized user was received");
+           return null;
         }
     }
 

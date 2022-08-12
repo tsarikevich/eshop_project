@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Set;
@@ -24,7 +25,8 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Column(name = "NAME",unique = true)
     private String role;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<User> users;
 
     @Override

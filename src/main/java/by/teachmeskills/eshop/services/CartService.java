@@ -54,9 +54,6 @@ public class CartService {
     }
 
     public ModelAndView getCartData(Cart cart) {
-//        if (Optional.ofNullable(user.getLogin()).isPresent()
-//                && Optional.ofNullable(user.getPassword()).isPresent()
-//                && Optional.ofNullable(user.getEmail()).isPresent()) {
             ModelMap modelMap = new ModelMap();
             List<Image> cartProductsImages = imageRepository.getImagesByProductIn(cart.getListProducts());
             modelMap.addAttribute(CART_PRODUCTS.getValue(), cart.getProducts());
@@ -64,9 +61,6 @@ public class CartService {
             modelMap.addAttribute(CART_PRODUCTS_IMAGES.getValue(), cartProductsImages);
             modelMap.addAttribute(ACTIVE_BUTTON_NAV_MENU.getValue(), true);
             return new ModelAndView(PagesPathEnum.CART_PAGE.getPath(), modelMap);
-//        } else {
-//            return new ModelAndView(EshopConstants.REDIRECT_TO_LOGIN_PAGE);
-//        }
     }
 
     public ModelAndView checkout(Cart cart) {
