@@ -25,7 +25,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "PRODUCTS")
+@Table(name = "products")
 public class Product extends BaseEntity {
     @CsvBindByName
     @Column(name = "NAME",unique = true)

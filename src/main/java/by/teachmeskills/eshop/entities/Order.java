@@ -27,7 +27,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "ORDERS")
+@Table(name = "orders")
 public class Order extends BaseEntity {
     @CsvBindByName
     @Column(name = "PRICE")

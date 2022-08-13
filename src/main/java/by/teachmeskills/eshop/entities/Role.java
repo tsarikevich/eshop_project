@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @Entity
 @ToString
-@Table(name = "ROLES")
+@Table(name = "roles")
 public class Role extends BaseEntity implements GrantedAuthority {
     @Column(name = "NAME",unique = true)
     private String role;

@@ -34,7 +34,7 @@ import java.util.Set;
 @Setter
 @Entity
 @ToString
-@Table(name = "USERS")
+@Table(name = "users")
 public class User extends BaseEntity implements UserDetails{
     @CsvBindByName
     @NotEmpty(message = "Login must not be empty")
@@ -67,7 +67,7 @@ public class User extends BaseEntity implements UserDetails{
     private List<Order> orders;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_ROLES", joinColumns ={@JoinColumn(name = "USER_ID")},
+    @JoinTable(name = "user_roles", joinColumns ={@JoinColumn(name = "USER_ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     @ToString.Exclude
     private Set<Role> roles;
