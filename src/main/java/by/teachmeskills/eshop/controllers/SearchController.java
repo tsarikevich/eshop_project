@@ -33,4 +33,11 @@ public class SearchController {
                                             @RequestParam(value = PAGE_SIZE, defaultValue = "3") int pageSize) {
         return productService.searchProducts(searchParamsDto, pageNumber, pageSize);
     }
+
+    @GetMapping("/result")
+    public ModelAndView getResultPage(@ModelAttribute SearchParamsDto searchParamsDto,
+                                      @RequestParam(value = PAGE_NUMBER, defaultValue = "0") int pageNumber,
+                                      @RequestParam(value = PAGE_SIZE, defaultValue = "3") int pageSize) {
+        return productService.searchProducts(searchParamsDto, pageNumber, pageSize);
+    }
 }

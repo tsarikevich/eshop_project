@@ -1,33 +1,23 @@
 package by.teachmeskills.eshop.exceptions;
 
-import by.teachmeskills.eshop.utils.EshopConstants;
 import lombok.extern.log4j.Log4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-@Log4j
+import static by.teachmeskills.eshop.utils.EshopConstants.DESCRIPTION_ERROR_MESSAGE;
+import static by.teachmeskills.eshop.utils.PagesPathEnum.ERROR_PAGE;
+
 @ControllerAdvice(basePackages = "by.teachmeskills.eshop.controllers")
+@Log4j
 public class GlobalControllerException {
+
     @ExceptionHandler
-    public ModelAndView SessionException(Exception e) {
+    public ModelAndView globalException(Exception e) {
         log.error(e.getMessage());
-        return new ModelAndView(EshopConstants.REDIRECT_TO_LOGIN_PAGE);
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(AuthorizationException.class)
-    public ModelAndView AuthException(Exception e) {
-        log.error(e.getMessage());
-        return new ModelAndView(EshopConstants.REDIRECT_TO_LOGIN_PAGE);
-    }
-
-    @ResponseStatus(HttpStatus.NOT_MODIFIED)
-    @ExceptionHandler(ImageException.class)
-    public String ImageException(Exception e) {
-        log.error(e.getMessage());
-        return e.getMessage();
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute(DESCRIPTION_ERROR_MESSAGE, e.getMessage());
+        return new ModelAndView(ERROR_PAGE.getPath(), modelMap);
     }
 }

@@ -7,80 +7,116 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/profileStyle.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/profile.css}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<ul class="TopNavMenu">
-    <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
-    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
-        Корзина</a></li>
-    <th:block th:switch="${activeButtonNavMenu}">
-        <li style="float:right" th:case="true">
-            <a class="active" th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${user.getLogin()}]]</a>
-        </li>
-        <li style="float:right" th:case="false">
-            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[user.getLogin()}]]</a>
-        </li>
-    </th:block>
-    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
-        Поиск</a></li>
-</ul>
-<h3 class="text-center">Добро пожаловать, <b class="font-italic" th:text="${user.getLogin()}"></b>!</h3>
-<div class="container-fluid">
-    <div class="userInfo">
-        <h4><i>Личная информация</i></h4>
-        <b>Имя:</b> [[${user.getName()}]]<br>
-        <b>Фамилия:</b> [[${user.getSurname()}]]<br>
-        <b>Дата рождения:</b> [[${#temporals.format(user.getBirthDate(), 'dd.MM.yyyy')}]]<br>
-        <b>Email:</b> [[${user.getEmail()}]]<br>
-        <th:block th:if="${#lists.isEmpty(orders)}">
-            <b>Доп. информация:</b> Купленных товаров нет</p>
-        </th:block>
-        <a th:href="@{/logout}">
-            <button class="buttonQuit">
-                <i class="fa fa-sign-out fa-lg" style="padding-right: 5px"></i> Выйти
-            </button>
-        </a>
-        <a style="text-decoration: none"
-           th:href="@{/profile/download}">
-            <button><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Download CSV File</button>
-        </a>
-    </div>
-</div>
-<th:block th:if="${not #lists.isEmpty(orders)}">
-    <h4><p>История покупок:</p></h4>
-    <th:block th:each="order,stat:${orders}">
-        <p th:text="'Заказ №'+${stat.count}+' /'+${#temporals.format(order.getDate(), 'dd-MM-yyyy HH:mm:ss')}+'/ общая стоимость '+ ${order.getPrice()}+ ' руб.:'">
-            <br>
-        <div class="historyInfo">
-            <th:block th:each="product:${order.getProducts()}">
-                <div class="history">
-                    <th:block th:each="image:${orderProductsImages}" var="image">
-                        <th:block th:if="${product.key.getId()==image.product.getId()}">
-                            <a target="_blank"
-                               th:href="@{'/product/'+${product.key.getId()}}">
-                                <img th:src="@{'/images/'+${image.getImagePath()}}" th:alt="${image.getImagePath()}"
-                                     width="300" height="200">
-                            </a>
-                        </th:block>
+<div class="wrapper">
+    <div class="top">
+        <ul class="TopNavMenu">
+            <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a>
+            </li>
+            <li><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+                Поиск</a></li>
 
+            <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+                Корзина</a>
+            </li>
+
+
+            <li style="float:right">
+                <a class="active" th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${user.getLogin()}]]</a>
+            </li>
+
+            <li style="float: right;">
+                <nav class="navbar navbar-black" style="height: 50px;">
+                    <form class="form-inline" method="post" th:action="@{'/search?categoryName=&minPrice=&maxPrice='}">
+                        <input class="form-control mr-sm-2" type="text" name="searchKey" placeholder="Поиск...">
+                        <button class="navSearchButton" type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </nav>
+            </li>
+        </ul>
+
+
+        <h3 class="text-center" style="font-family: 'Open Sans Condensed';margin: 10px auto">Добро пожаловать, <b
+                class="font-italic" th:text="${user.getLogin()}"></b>!</h3>
+        <div class="container-fluid">
+            <div class="userInfo">
+                <h4><i>Личная информация</i></h4>
+                <b>Имя:</b> [[${user.getName()}]]<br>
+                <b>Фамилия:</b> [[${user.getSurname()}]]<br>
+                <b>Дата рождения:</b> [[${#temporals.format(user.getBirthDate(), 'dd.MM.yyyy')}]]<br>
+                <b>Email:</b> [[${user.getEmail()}]]<br>
+                <th:block th:if="${#lists.isEmpty(user.getOrders())}">
+                    <b>Доп. информация:</b> Купленных товаров нет</p>
+                </th:block>
+                <div style="display: inline-block">
+                    <a style="text-decoration: none"
+                       th:href="@{/profile/download}">
+                        <button id="downloadUserInfo"><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Скачать
+                        </button>
+                    </a>
+                    <th:block sec:authorize="hasRole('ADMIN')">
+                        <a target="_blank" th:href="@{/users}" style="text-decoration: none">
+                            <button class="buttonUsers">
+                                <i class="fa fa-database fa-lg" style="padding-right: 5px"></i>Пользователи
+                            </button>
+                        </a>
                     </th:block>
-                    <div class="desc"><b>Модель:</b>[[${product.key.getName()}]]<br>
-                        <b>Количество:</b> [[${product.value}]] шт.<br>
-                        <b>Цена (1 шт.):</b> [[${product.key.getPrice()}]] руб.<br>
-                    </div>
+                    <a th:href="@{/logout}" style="text-decoration: none">
+                        <button class="buttonQuit">
+                            <i class="fa fa-sign-out fa-lg" style="padding-right: 5px"></i> Выйти
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <th:block th:if="${not #lists.isEmpty(user.getOrders())}">
+            <h3 style="font-family: 'Open Sans Condensed';margin-left: 15px;" th:text="'История покупок:'"></h3>
+            <th:block th:each="order,stat:${user.getOrders()}">
+                <div id=orders>
+                    <a style="text-decoration: none"
+                       th:href="@{'/profile/order/download?orderId='+${order.getId()}}">
+                        <button id="downloadOrder"><i class="fa fa-download fa-lg"></i>
+                        </button>
+                    </a>
+
+                    <th:block
+                            th:text="'Заказ №'+${stat.count}+' /'+${#temporals.format(order.getDate(), 'dd-MM-yyyy HH:mm:ss')}+'/ общая стоимость '+ ${#numbers.formatDecimal(order.getPrice(),1, 'WHITESPACE', 2, 'POINT')}+ ' руб.:'"></th:block>
+                </div>
+                <div class="historyInfo">
+                    <th:block th:each="product:${order.getProducts()}">
+                        <div class="history">
+                            <th:block th:each="image:${product.key.getImages()}" var="image">
+                                <th:block th:if="${image.isPrimaryFlag}">
+                                    <a target="_blank"
+                                       th:href="@{'/product/'+${product.key.getId()}}">
+                                        <img th:src="@{'/images/'+${image.getImagePath()}}"
+                                             th:alt="${image.getImagePath()}"
+                                             width="300" height="200">
+                                    </a>
+                                </th:block>
+
+                            </th:block>
+                            <div class="desc"><b>Модель:</b>[[${product.key.getName()}]]<br>
+                                <b>Количество:</b> [[${product.value}]] шт.<br>
+                                <div style=" white-space: nowrap;"><b>Цена (1 шт.):</b>
+                                    [[${#numbers.formatDecimal(product.key.getPrice(),1, 'WHITESPACE', 2, 'POINT')}]]
+                                    руб.<br></div>
+                            </div>
+                        </div>
+                    </th:block>
                 </div>
             </th:block>
-        </div>
-        <a style="text-decoration: none"
-           th:href="@{'/profile/order/download?orderId='+${order.getId()}}">
-            <button><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Download CSV File
-            </button>
-        </a>
-    </th:block>
-</th:block>
+        </th:block>
+    </div>
+
+    <div class="footer">
+        © Разработка интернет-магазина. Царикевич М., 2022
+    </div>
+</div>
 </body>
 </html>

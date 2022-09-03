@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -31,14 +32,25 @@ public class Cart {
         totalCost = totalCost.add(price);
     }
 
-    public void deleteProduct(Product product) {
-        if (products.get(product) > 1) {
-            products.put(product, products.get(product) - 1);
-        } else {
+    public void deleteOneProduct(Product product) {
+        if (products.size() > 0) {
+            if (products.get(product) > 1) {
+                products.put(product, products.get(product) - 1);
+            } else {
+                products.remove(product);
+            }
+            BigDecimal price = product.getPrice();
+            totalCost = totalCost.subtract(price);
+        }
+    }
+
+    public void deleteProducts(Product product) {
+        if (Optional.ofNullable(product).isPresent() && products.size() > 0) {
+            String quantityProducts = String.valueOf(products.get(product));
+            BigDecimal priceProducts = product.getPrice().multiply(new BigDecimal(quantityProducts));
+            totalCost = totalCost.subtract(priceProducts);
             products.remove(product);
         }
-        BigDecimal price = product.getPrice();
-        totalCost = totalCost.subtract(price);
     }
 
     public List<Product> getListProducts() {

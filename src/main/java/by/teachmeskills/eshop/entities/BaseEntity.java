@@ -1,6 +1,7 @@
 package by.teachmeskills.eshop.entities;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,30 +12,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.util.Objects;
 
 @NoArgsConstructor
 @MappedSuperclass
 @Getter
 @Setter
+@EqualsAndHashCode
 @SuperBuilder
 public class BaseEntity {
     @Id
-    @Column(name = "ID")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @CsvBindByName
     protected int id;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseEntity that = (BaseEntity) o;
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

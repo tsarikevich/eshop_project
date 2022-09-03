@@ -11,7 +11,9 @@ public enum PagesPathEnum {
     PRODUCT_PAGE("product"),
     PROFILE_PAGE("profile"),
     CART_PAGE("cart"),
-    SEARCH_PAGE("search");
+    SEARCH_PAGE("search"),
+    USERS_PAGE("users"),
+    ERROR_PAGE("error");
     private final String path;
 
     PagesPathEnum(String path) {

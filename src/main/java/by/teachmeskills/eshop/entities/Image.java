@@ -1,6 +1,7 @@
 package by.teachmeskills.eshop.entities;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,10 +10,11 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
@@ -20,35 +22,24 @@ import java.util.Objects;
 @Entity
 @ToString
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true,exclude = {"product","category"})
 @Table(name = "images")
 public class Image extends BaseEntity {
     @CsvBindByName
-    @Column(name = "PRIMARY_FLAG")
+    @Column(name = "primary_flag")
     private boolean primaryFlag;
+
     @CsvBindByName
-    @Column(name = "IMAGE_PATH")
+    @Column(name = "image_path")
     private String imagePath;
 
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     @ToString.Exclude
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     @ToString.Exclude
     private Category category;
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Image image = (Image) o;
-        return primaryFlag == image.primaryFlag && Objects.equals(imagePath, image.imagePath);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), primaryFlag, imagePath);
-    }
 }

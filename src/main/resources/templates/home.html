@@ -6,67 +6,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/select.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/navMenu.css}"/>
+    <script type="text/javascript" th:src="@{/js/uploadCSV.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<ul class="TopNavMenu">
-    <th:block th:switch="${activeButtonNavMenu}">
-        <li th:case="true"><a class="active" th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
-        <li th:case="false"><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
-    </th:block>
-    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
-        Корзина</a></li>
-    <div sec:authorize="isAnonymous()">
-        <li style="float:right">
-            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
-        </li>
-    </div>
-    <div sec:authorize="isAuthenticated()">
-        <li style="float:right">
-            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${user.getLogin()}]]</a>
-        </li>
-    </div>
-    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
-        Поиск</a></li>
-</ul>
-<h2 style="padding-top: 16px">Popular categories</h2>
-<div class="container-fluid">
-    <th:block th:if="${not #lists.isEmpty(categories)}">
-        <div class="row">
-            <th:block th:each="category:${categories}">
-                <div class="card w-25 m-1" type="category">
-                    <div class="card-body">
-                        <th:block th:text=${category.getName()}></th:block>
-                        <th:block th:each="image:${categoriesImages}">
-                            <th:block th:if="${category.getId()==image.category.getId()}">
-                                <a th:href="@{'/category/'+${category.getName()}+'/'+${category.getId()}}">
-                                    <img class="card-img"
-                                         style="width:150px;height:120px"
-                                         th:src="@{'/images/'+${image.getImagePath()}}"
-                                         alt="Card image"></a>
+
+<div class="wrapper">
+    <div class="top">
+        <ul class="TopNavMenu">
+            <li><a class="active" th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a>
+            </li>
+            <li><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+                Поиск</a></li>
+            <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+                Корзина</a></li>
+            <div sec:authorize="isAnonymous()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
+                </li>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${authUserLogin}]]</a>
+                </li>
+            </div>
+            <li style="float: right;">
+                <nav class="navbar navbar-black" style="height: 50px;">
+                    <form class="form-inline" method="post" th:action="@{'/search?categoryName=&minPrice=&maxPrice='}">
+                        <input class="form-control mr-sm-2" type="text" name="searchKey" placeholder="Поиск...">
+                        <button class="navSearchButton" type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </nav>
+            </li>
+        </ul>
+
+        <h2 style="margin:16px 0 20px 20px;font-family: 'Open Sans Condensed';">Категории товаров</h2>
+        <div class="container-fluid">
+            <th:block th:if="${not #lists.isEmpty(categories)}">
+                <div class="row">
+                    <div class="col-11">
+                        <div class="row">
+                            <th:block th:each="category:${categories}">
+                                <div id=homeCard class="card img-fluid">
+                                    <a th:href="@{'/category/'+${category.getName()}+'/'+${category.getId()}}">
+                                        <img id=homeImg class="card-img"
+                                             th:src="@{'/images/'+${category?.getImage()?.getImagePath()}}"
+                                             alt="Card image">
+                                    </a>
+                                    <div class="text-block">
+                                        <h5>[[${category.getName()}]]</h5>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <div class="col-1">
+                        показать по:
+                        <div class="myBox" style="padding-left: 10px">
+                            <select onchange="location=value">
+                                <th:block th:if="${pageSize==totalElements}">
+                                    <option selected th:text="Все"></option>
+                                </th:block>
+                                <th:block th:if="${pageSize!=totalElements}">
+                                    <option selected th:text="${pageSize}"></option>
+                                </th:block>
+                                <option th:value="@{'/home?pageNumber=0&pageSize=3'}"
+                                        th:text="3"></option>
+                                <option th:value="@{'/home?pageNumber=0&pageSize=6'}"
+                                        th:text="6"></option>
+                                <option th:value="@{'/home?pageNumber=0&pageSize=12'}"
+                                        th:text="12"></option>
+                                <option th:value="@{'/home?pageNumber=0&pageSize='+${totalElements}}"
+                                        th:text="Все"></option>
+                            </select>
+                        </div>
+                        <div id="download" sec:authorize="isAuthenticated()">
+                            <a style="text-decoration: none;"
+                               th:href="@{'/home/download'}">
+                                <button id="downloadButton">
+                                    <i class="fa fa-download fa-lg" style="padding-right: 5px"></i><br>Скачать csv-файл
+                                </button>
+                            </a>
+                        </div>
+                        <div id="upload" sec:authorize="hasRole('ADMIN')">
+                            <form method="POST" enctype="multipart/form-data" th:action="@{'/home/upload'}">
+                                <label id="inputLabel" for="inputTag">
+                                    Выбрать<br/>файл
+                                    <i style="font-size: 30px;margin: 7px 10px 2px" class="fa fa-2x fa-file"></i>
+                                    <input id="inputTag" type="file" name="file"
+                                           oninput="inputFile()"/>
+                                    <br/>
+                                    <span id="imageName"></span>
+                                </label>
+                                <button id="uploadButton" type="submit">
+                                    <i class="fa fa-upload fa-lg"></i></br><span
+                                        style="padding: 0 5px">Загрузить</span></br>csv-файл
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <nav aria-label style="margin-top: 10px">
+                    <ul class="pagination justify-content-center">
+                        <th:block th:switch="${isFirstPage}">
+                            <li th:case="false" class="page-item"><a class="page-link" style="color: black"
+                                                                     th:href="@{'/home?pageNumber='+${pageNumber-1}+'&pageSize='+${pageSize}}">Предыдущая</a>
+                            </li>
+                            <li th:case="true" class="page-item disabled"><a class="page-link">Предыдущая</a>
+                            </li>
+                        </th:block>
+                        <th:block th:each="i: ${#numbers.sequence(0, totalPages-1)}">
+                            <th:block th:switch="${pageNumber eq i}">
+                                <li th:case="true" class="page-item">
+                                    <a class="page-link active" th:text="${i+1}" style="color: white"></a>
+                                </li>
+                                <li th:case="false" class="page-item">
+                                    <a class="page-link"
+                                       th:href="@{'/home/?pageNumber='+${i}+'&pageSize='+${pageSize}}"
+                                       style="color: black"
+                                       th:text="${i+1}"></a>
+                                </li>
                             </th:block>
                         </th:block>
-                    </div>
-                </div>
+                        <th:block th:switch="${isLastPage}">
+                            <li th:case="false" class="page-item"><a class="page-link" style="color: black"
+                                                                     th:href="@{'/home?pageNumber='+${pageNumber+1}+'&pageSize='+${pageSize}}">Следующая</a>
+                            </li>
+                            <li th:case="true" class="page-item disabled"><a class="page-link">Следующая</a>
+                            </li>
+                        </th:block>
+                    </ul>
+                </nav>
             </th:block>
         </div>
-    </th:block>
-</div>
-<div sec:authorize="hasRole('ADMIN')">
-    <form method="POST" enctype="multipart/form-data" th:action="@{'/home/upload'}">
-        File to upload:
-        <input type="file" value="Select" name="file"><br/>
-        <button type="submit"><i class="fa fa-upload fa-lg">Upload CSV File</i></button>
-    </form>
-</div>
-<div sec:authorize="isAuthenticated()">
-    <a style="text-decoration: none"
-       th:href="@{'/home/download'}">
-        <button><i class="fa fa-download fa-lg" style="padding-right: 5px"></i>Download CSV File</button>
-    </a>
+    </div>
+
+    <div class="footer">
+        © Разработка интернет-магазина. Царикевич М., 2022
+    </div>
 </div>
 </body>
 </html>

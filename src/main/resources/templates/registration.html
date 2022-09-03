@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/signStyle.css}"/>
-    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/sign.css}"/>
+    <script type="text/javascript" th:src="@{/js/registration.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -60,16 +60,16 @@
                 <span id="surnameError" style="display: none;">*Поле 'Фамилия' не заполнено!</span>
             </div>
             <input id="email" type="text" placeholder="Email" name="email" oninput="validateEmail()"><br/>
-            <span class="error" th:text="${emailError}"></span>
             <span id="emailError" style="display: none;">*Поле 'Email' не заполнено!</span>
             <span id="validationErr" style="display: none;">*Неверный формат email адреса!</span>
+            <span class="error" th:text="${emailError}"></span>
             <input id="password" type="text" placeholder="Пароль" name="password" oninput="validatePass()"><br/>
             <span id="passwordError" style="display: none;">*Поле 'Пароль' не заполнено!</span>
             <input id="repeatPswd" type="text" placeholder="Повторите пароль" name="repeatPass"
                    oninput="validateRepeatPass()"><br/>
             <span id="repeatPassError" style="display: none;">*Поле 'Повторите пароль' не заполнено!</span>
             <span id="matchingError" style="display: none;">*Пароли не совпадают!</span>
-            <button id="regFormSignUpBtn" type="submit">Зарегистрироваться</button>
+            <button id="regFormSignUpBtn" type="submit" class="btn btn-primary">Зарегистрироваться</button>
             <br/>
             <div style="padding-top: 16px">
                 <span style="color: #777777">Есть аккаунт? </span>
@@ -83,12 +83,12 @@
         <p>
         <h3>Пользователь с логином <u><i th:text="${userLogin.getLogin()}"></i></u> уже существует</h3>
         </p>
-        <div class="btn-group" style="">
+        <div class="btn-group">
             <a th:href="@{/registration}">
                 <button type="button" class="btn btn-info">Регистрация</button>
             </a>
             <a th:href="@{/login}">
-                <button type="button" class="btn btn-primary">Авторизация</button>
+                <button type="button" class="btn btn-primary">Вход</button>
             </a>
         </div>
     </div>

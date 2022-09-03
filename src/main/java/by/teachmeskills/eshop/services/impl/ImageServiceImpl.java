@@ -1,15 +1,16 @@
 package by.teachmeskills.eshop.services.impl;
 
 import by.teachmeskills.eshop.entities.Image;
-import by.teachmeskills.eshop.exceptions.ImageException;
 import by.teachmeskills.eshop.repositories.ImageRepository;
 import by.teachmeskills.eshop.services.ImageService;
+import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Log4j
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
 
@@ -19,7 +20,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Image create(Image entity) {
-        return imageRepository.save(entity);
+        return imageRepository.saveAndFlush(entity);
     }
 
     @Override
@@ -28,12 +29,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image update(Image entity) throws ImageException {
+    public Image update(Image entity) {
         Optional<Image> image = imageRepository.findById(entity.getId());
         if (image.isPresent()) {
-            return imageRepository.save(entity);
+            return imageRepository.saveAndFlush(entity);
         } else {
-            throw new ImageException("Image doesn't exist in the DB");
+            log.error("Image doesn't exist");
+            return null;
         }
     }
 

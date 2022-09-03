@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Users</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="text/javascript" th:src="@{/js/validation.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="table table-sm">
+    <table class="table table-hover"
+           style="margin: 50px auto;background: white;border-radius: 14px;box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        <thead>
+        <tr>
+            <th class="text-center" style="vertical-align: middle">Id</th>
+            <th class="text-center" style="vertical-align: middle">Логин</th>
+            <th class="text-center" style="vertical-align: middle">Имя</th>
+            <th class="text-center" style="vertical-align: middle">Фамилия</th>
+            <th class="text-center" style="vertical-align: middle">Email</th>
+            <th class="text-center" style="vertical-align: middle">Пароль</th>
+            <th class="text-center" style="vertical-align: middle">Дата рождения</th>
+            <th class="text-center" style="vertical-align: middle">Баланс</th>
+            <th class="text-center" style="vertical-align: middle">Роли</th>
+            <th class="text-center" style="vertical-align: middle"></th>
+            <th class="text-center" style="vertical-align: middle"></th>
+        </tr>
+        </thead>
+        <th:block th:each="user,stat:${usersFromDB}">
+            <tbody class="table table-bordered">
+            <tr>
+                <th class="text-center" style="vertical-align: middle" scope="row" th:text="${user.getId()}"></th>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getLogin()}"></td>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getName()}"></td>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getSurname()}"></td>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getEmail()}"></td>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getPassword()}"></td>
+                <td class="text-center" style="vertical-align: middle"
+                    th:text="${#temporals.format(user.getBirthDate(), 'dd.MM.yyyy')}"></td>
+                <td class="text-center" style="vertical-align: middle" th:text="${user.getBalance()}"></td>
+                <td class="text-center" style="vertical-align: middle">
+                    <th:block th:each="role:${user.getRoles()}">
+                        <div th:text="${role.getRole()}"></div>
+                    </th:block>
+                </td>
+                <td>
+                    <div class="text-center" style="vertical-align: middle">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#updateModalCenter"
+                                th:attrappend="data-target=${user.getId()}">
+                            Обновить
+                        </button>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="updateModalCenter" tabindex="-1" role="dialog"
+                         aria-labelledby="updateModalCenterTitle" aria-hidden="true"
+                         th:attrappend="id=${user.getId()}">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="updateModalLongTitle">Редактирование данных
+                                        пользователя</h5>
+                                    <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="needs-validation" novalidate method="post" th:action="@{/users/edit}">
+                                        <input name="id" type="hidden" th:value="${user.getId()}">
+                                        <div class="form-group">
+                                            <label for="login" class="col-form-label">Логин:</label>
+                                            <input type="text" class="form-control" id="login" name="login"
+                                                   placeholder="Логин" th:value="${user.getLogin()}" required>
+                                            <div class="invalid-feedback">
+                                                Поле 'Логин' не заполнено!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-form-label">Имя:</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                   placeholder="Имя" th:value="${user.getName()}" required>
+                                            <div class="invalid-feedback">
+                                                Поле 'Имя' не заполнено!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="surname" class="col-form-label">Фамилия:</label>
+                                            <input type="text" class="form-control" id="surname" name="surname" required
+                                                   placeholder="Фамилия" th:value="${user.getSurname()}">
+                                            <div class="invalid-feedback">
+                                                Поле 'Фамилия' не заполнено!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="col-form-label">Email:</label>
+                                            <input type="email" class="form-control" id="email" name="email"
+                                                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="Email"
+                                                   th:value="${user.getEmail()}" required>
+                                            <div class="invalid-feedback">
+                                                Необходимо ввести корректный email в поле!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="birth" class="col-form-label">Дата рождения:</label>
+                                            <input type="date" class="form-control" id="birth" name="birthDate"
+                                                   min="1910-01-01" max="2015-01-01"
+                                                   th:value="${user.getBirthDate()}" required>
+                                            <div class="invalid-feedback">
+                                                Поле 'Дата рождения' не заполнено!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password" class="col-form-label">Пароль:</label>
+                                            <input type="text" class="form-control" id="password" name="password"
+                                                   placeholder="Пароль" th:value="${user.getPassword}" required>
+                                            <div class="invalid-feedback">
+                                                Поле 'Пароль' не заполнено!
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="balance" class="col-form-label">Баланс:</label>
+                                            <input type="text" class="form-control" id="balance" name="balance"
+                                                   placeholder="Баланс"
+                                                   th:value="${#numbers.formatDecimal(user.getBalance(), 1, 'WHITESPACE', 2, 'POINT')}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="roles">Выбор роли:</label>
+                                            <select class="form-control" name="role" id="roles">
+                                                <th:block th:if="${user.getRoles().size()>=2}">
+                                                    <option selected th:text="ALL"></option>
+                                                </th:block>
+                                                <th:block th:if="${user.getRoles().size()<2}">
+                                                    <th:block th:each="role:${user.getRoles()}">
+                                                        <option selected
+                                                                th:text="${role.getRole()}"></option>
+                                                    </th:block>
+                                                </th:block>
+                                                <option>ALL</option>
+                                                <option>ROLE_ADMIN</option>
+                                                <option>ROLE_USER</option>
+                                            </select>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="reset" class="btn btn-secondary" data-dismiss="modal">
+                                                Закрыть
+                                            </button>
+                                            <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center" style="vertical-align: middle">
+                        <form th:action="@{'/users/delete/'+${user.getId()}}" method="post">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </th:block>
+    </table>
+</div>
+<div class="d-flex justify-content-center">
+    <a class="btn btn-success btn-lg" data-toggle="modal" data-target="#addUserModal"
+       style="box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        Добавить нового пользователя</a>
+</div>
+
+
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Добавление нового пользователя</h5>
+                <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" novalidate th:action="@{/users/add}" method="post" id="addNewUser">
+                    <div class="form-group">
+                        <label for="userLogin" class="col-form-label">Логин:</label>
+                        <input type="text" class="form-control" id="userLogin" name="login" placeholder="Логин"
+                               required>
+                        <div class="invalid-feedback">
+                            Поле 'Логин' не заполнено!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userName" class="col-form-label">Имя:</label>
+                        <input type="text" class="form-control" id="userName" name="name" placeholder="Имя" required>
+                        <div class="invalid-feedback">
+                            Поле 'Имя' не заполнено!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userSurname" class="col-form-label">Фамилия:</label>
+                        <input type="text" class="form-control" id="userSurname" name="surname" placeholder="Фамилия"
+                               required>
+                        <div class="invalid-feedback">
+                            Поле 'Фамилия' не заполнено!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="userEmail" name="email" placeholder="Email:"
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                        <div class="invalid-feedback">
+                            Необходимо ввести корректную электронную почту в поле!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userBirth" class="col-form-label">Дата рождения:</label>
+                        <input type="date" class="form-control" id="userBirth" name="birthDate"
+                               min="1910-01-01" max="2015-01-01"
+                               onfocus="(this.type='date')" required>
+                        <div class="invalid-feedback">
+                            Поле 'Дата рождения' не заполнено!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword" class="col-form-label">Пароль:</label>
+                        <input type="text" class="form-control" id="userPassword" name="password" placeholder="Пароль"
+                               required>
+                        <div class="invalid-feedback">
+                            Поле 'Пароль' не заполнено!
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userBalance" class="col-form-label">Баланс:</label>
+                        <input type="text" class="form-control" id="userBalance" name="balance" placeholder="Баланс">
+                    </div>
+                    <div class="form-group">
+                        <label for="userRoles">Выбор роли:</label>
+                        <select class="form-control" name="role" id="userRoles">
+                            <option>ROLE_USER</option>
+                            <option>ROLE_ADMIN</option>
+                            <option>ALL</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal">Закрыть
+                        </button>
+                        <button type="submit" class="btn btn-success">Добавить пользователя</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,9 +1,10 @@
 package by.teachmeskills.eshop.services;
 
 import by.teachmeskills.eshop.entities.User;
+import by.teachmeskills.eshop.exceptions.UserException;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.Writer;
+import javax.servlet.http.HttpServletResponse;
 
 public interface UserService extends BaseService<User> {
 
@@ -11,9 +12,17 @@ public interface UserService extends BaseService<User> {
 
     ModelAndView showProfile();
 
-    void writeProfileToCsv(Writer writer);
+    ModelAndView addUserOnUsersPage(User user, String role) throws UserException;
 
-    void writeOrderToCsv(int orderId, Writer writer);
+    ModelAndView getUsersDataForUsersPage();
 
-    User getAuthorizationUserOrNull();
+    ModelAndView updateUserOnUsersPage(User user, String role) throws UserException;
+
+    ModelAndView deleteUserFromUsersPage(int id);
+
+    void writeProfileToCsv(HttpServletResponse response);
+
+    void writeOrderToCsv(int orderId, HttpServletResponse response);
+
+    String getAuthorizationUserLoginOrDefault();
 }

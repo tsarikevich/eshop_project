@@ -1,4 +1,5 @@
 package by.teachmeskills.eshop.controllers;
+
 import by.teachmeskills.eshop.services.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,10 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static by.teachmeskills.eshop.utils.EshopConstants.FILE;
-import static by.teachmeskills.eshop.utils.EshopConstants.REDIRECT_TO_HOME;
+import static by.teachmeskills.eshop.utils.EshopConstants.PAGE_NUMBER;
+import static by.teachmeskills.eshop.utils.EshopConstants.PAGE_SIZE;
+import static by.teachmeskills.eshop.utils.EshopConstants.REDIRECT_TO_HOME_PAGE;
 
 @RestController
 @RequestMapping("/home")
@@ -24,21 +26,19 @@ public class HomeController {
     }
 
     @GetMapping
-    public ModelAndView getHomePage() {
-        return categoryService.getAllCategories();
+    public ModelAndView getHomePage(@RequestParam(value = PAGE_NUMBER, defaultValue = "0") int pageNumber,
+                                    @RequestParam(value = PAGE_SIZE, defaultValue = "6") int pageSize){
+        return categoryService.getAllCategories(pageNumber, pageSize);
     }
 
     @GetMapping("/download")
-    public void downloadCsvFile(HttpServletResponse response) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF8");
-        response.addHeader("Content-Disposition", "attachment; filename=categories.csv");
-        categoryService.writeCategoriesToCsv(response.getWriter());
+    public void downloadCsvFile(HttpServletResponse response) {
+        categoryService.writeCategoriesToCsv(response);
     }
 
     @PostMapping("/upload")
     public ModelAndView uploadCategoriesFromFile(@RequestParam(FILE) MultipartFile file) {
         categoryService.saveCategoriesFromCsv(file);
-        return new ModelAndView(REDIRECT_TO_HOME);
+        return new ModelAndView(REDIRECT_TO_HOME_PAGE);
     }
 }

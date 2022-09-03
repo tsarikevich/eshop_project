@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static by.teachmeskills.eshop.utils.EshopConstants.ORDER_ID;
 
@@ -27,18 +26,12 @@ public class ProfileController {
     }
 
     @GetMapping("/download")
-    public void downloadCsvFile(HttpServletResponse response) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF8");
-        response.addHeader("Content-Disposition", "attachment; filename=profile.csv");
-        userService.writeProfileToCsv(response.getWriter());
+    public void downloadUserCsvFile(HttpServletResponse response){
+        userService.writeProfileToCsv(response);
     }
 
     @GetMapping("order/download")
-    public void downloadCsvFile(HttpServletResponse response, @RequestParam(ORDER_ID) int orderId) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF8");
-        response.addHeader("Content-Disposition", "attachment; filename=order" + orderId + ".csv");
-        userService.writeOrderToCsv(orderId, response.getWriter());
+    public void downloadOrderCsvFile(HttpServletResponse response, @RequestParam(ORDER_ID) int orderId){
+        userService.writeOrderToCsv(orderId, response);
     }
 }

@@ -30,21 +30,21 @@ public class WebSecurityConfig {
                                 .authenticated()
                                 .antMatchers("/cart/**")
                                 .authenticated()
+//                                .antMatchers("/users/**")
+//                                .hasAuthority("ROLE_ADMIN")
                                 .and()
                                 .formLogin()
                                 .loginPage("/login")
                                 .usernameParameter("login")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/home").failureUrl("/login?error")
+                                .defaultSuccessUrl("/home")
+                                .failureUrl("/registration")
                                 .permitAll()
                                 .and()
                                 .logout()
                                 .invalidateHttpSession(true)
                                 .clearAuthentication(true)
                                 .permitAll();
-//                                .and()
-//                                .anonymous()
-//                                .disable();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

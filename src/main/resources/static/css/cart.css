@@ -1,0 +1,47 @@
+img[id=cartImg] {
+    width: 200px;
+    height: 200px;
+}
+td[id=cartDesc]{
+    padding: 10px;
+    width: 1150px;
+}
+
+tr[id=cartTr]{
+    padding: 10px;
+    background: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border:none;
+}
+
+/*ORDER_BUTTON*/
+.buttonOrder {
+    background-color: #228B22;
+    border-radius: 4px;
+    border: 0;
+    color: white;
+    padding: 16px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+.buttonOrder:hover {
+    background-color: #3CB371;
+}
+
+/*DELETE_BUTTON*/
+.buttonDelete {
+    background-color: #DC143C;
+    border: 0;
+    color: white;
+    padding: 12px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.buttonDelete:hover {
+    background-color: #FF0000;
+}

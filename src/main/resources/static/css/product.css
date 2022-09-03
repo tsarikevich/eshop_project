@@ -1,0 +1,42 @@
+/*TABLE*/
+table[id=productTable] {
+    background: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/*ADD_BUTTON*/
+.buttonAddProduct {
+    background-color: #228B22;
+    border: 0;
+    border-radius: 4px;
+    color: white;
+    padding: 14px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    height: 55px;
+    margin: 0 auto;
+    display: block;
+}
+
+button,
+button:active,
+button:focus {
+    outline: none;
+}
+
+.buttonAddProduct:hover {
+    background-color: #3CB371;
+
+}
+
+/*Сarousel*/
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+    filter: invert(1);
+}
+
+div[id=carouselControls] {
+    width: 700px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

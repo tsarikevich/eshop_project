@@ -1,0 +1,27 @@
+/*#HOME_CATEGORY_NAME_TEXT*/
+.text-block {
+    font-family: "Open Sans Condensed";
+    background: rgba(192, 192, 192, 0.85);
+    color: white;
+    font-weight: bolder;
+    padding: 0 10px 0 10px;
+    display: flex;
+    justify-content: flex-end;
+    bottom: 0;
+    position: absolute;
+}
+
+/*HOME_CAR_IMAGE*/
+div[id=homeCard] {
+    border: none;
+    width: 370px;
+    margin: 0px 50px 20px 43px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: white;
+}
+
+img[id=homeImg] {
+    width: 370px;
+    height: 240px
+}
+

@@ -1,68 +1,163 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Product</title>
+    <title>Product page</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/product.css}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
-        function productAddedToShoppingCartMsg() {
+        function userNeedAuthenticationMsg() {
+        window.confirm("Необходимо пройти аутентификацию!");
+    }
+
+    function productAddedToShoppingCartMsg() {
             window.confirm("Продукт добавлен в корзину!");
         }
     </script>
+
 </head>
 <body>
-<ul class="TopNavMenu">
-    <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
-    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
-        Корзина</a></li>
-    <li style="float:right"><a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>
-        Пользователь</a></li>
-    <li style="float:right"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
-        Поиск</a></li>
-</ul>
-<th:block th:if="${not #lists.isEmpty(oneProduct)}">
-    <div class="container-fluid">
-        <h2 class="text-center" style="padding-top: 16px" th:text="${oneProduct.getName()}"></h2><br>
-        <th:block th:each="image:${oneProductImages}">
-            <th:block th:if="${oneProduct.getId()==image.product.getId()}">
-                <img class="mx-auto d-block" style="height:auto; max-width: 400px;"
-                     th:src="@{'/images/'+${image.getImagePath()}}"
-                     th:alt="${image.getImagePath()}">
-            </th:block>
+<div class="wrapper">
+    <div class="top">
+        <ul class="TopNavMenu">
+            <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a>
+            </li>
+            <li><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+                Поиск</a></li>
+            <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+                Корзина</a></li>
+            <div sec:authorize="isAnonymous()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
+                </li>
+            </div>
+            <div sec:authorize="isAuthenticated()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${authUserLogin}]]</a>
+                </li>
+            </div>
+            <li style="float: right;">
+                <nav class="navbar navbar-black" style="height: 50px;">
+                    <form class="form-inline" method="post" th:action="@{'/search?categoryName=&minPrice=&maxPrice='}">
+                        <input class="form-control mr-sm-2" type="text" name="searchKey" placeholder="Поиск...">
+                        <button class="navSearchButton" type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </nav>
+            </li>
+        </ul>
+        <th:block th:if="${not #lists.isEmpty(oneProduct)}">
+            <h3 class="text-center" style="margin: 15px auto;font-family: 'Open Sans Condensed'"
+                th:text="${oneProduct.getName()}"></h3><br>
+            <div class="container-fluid" >
+
+
+                <div id="carouselControls" class="carousel slide" data-ride="carousel">
+                    <th:block th:if="${oneProduct.getImages().size()>=3}">
+                        <ol class="carousel-indicators">
+                            <li style=" background-color: #A9A9A9" data-target="#carouselControls" th:data-slide-to="0" class="active"></li>
+                            <th:block th:each="n:${#numbers.sequence(1, oneProduct.getImages().size()-1)}">
+                                <li style=" background-color: #A9A9A9" data-target="#carouselControls" th:data-slide-to="${n}"></li>
+                            </th:block>
+                        </ol>
+                    </th:block>
+                    <div class="carousel-inner">
+                        <th:block th:each="image:${oneProduct.getImages()}">
+                            <div th:if="${image.isPrimaryFlag()}" class="carousel-item active"
+                                 style="background: white">
+                                <img class="mx-auto d-block" th:src="@{'/images/'+${image.getImagePath()}}"
+                                     style="height: 460px;width: 460px" th:alt="${image.getImagePath()}">
+                            </div>
+
+                            <div th:if="${!image.isPrimaryFlag()}" class="carousel-item" style="background: white">
+                                <img class="mx-auto d-block" th:src="@{'/images/'+${image.getImagePath()}}"
+                                     style="height: 460px;width: 460px" th:alt="${image.getImagePath()}">
+                            </div>
+                        </th:block>
+                    </div>
+                    <th:block th:if="${oneProduct.getImages().size()>=2}">
+                        <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </th:block>
+                </div>
+
+
+                <div style="display: inline-block;width: auto;height: 30px;margin-top: 35px">
+                    <th:block th:each="image,stat:${oneProduct.getImages()}">
+                        <a th:if="${image.isPrimaryFlag()}" style="text-decoration: none;" href="#carouselControls"
+                           role="button" th:data-slide-to="0">
+                            <img data-target="#carouselControls"
+                                 style="height: 100px;width: auto;margin:auto 7px 30px 7px"
+                                 th:src="@{'/images/'+${image.getImagePath()}}"
+                                 th:alt="${image.getImagePath()}">
+                        </a>
+                        <a th:if="${!image.isPrimaryFlag()}" style="text-decoration: none " href="#carouselControls"
+                           role="button" th:data-slide-to="${stat.count-1}">
+                            <img data-target="#carouselControls"
+                                 style="height: 100px;width: auto;margin:auto 7px 30px 7px"
+                                 th:src="@{'/images/'+${image.getImagePath()}}"
+                                 th:alt="${image.getImagePath()}">
+                        </a>
+                    </th:block>
+                </div>
+
+                <h2 class="text-center" style="display: block;margin-top: 50px;font-family: 'Open Sans Condensed'">
+                    Информация о продукте:</h2>
+                <div class="container" style="padding-top: 20px;">
+                    <table id="productTable" class="table table-bordered">
+                        <tr style="font-weight: bolder">
+                            <td class="text-center" style="vertical-align: middle;width: 850px">Описание</td>
+                            <td class="text-center" style="vertical-align: middle;width: 150px">Цена, руб.</td>
+                            <td rowspan="2" class="text-center" style="vertical-align: middle">
+                                <a style="text-decoration: none"
+                                   th:href="@{'/cart/add?productId='+${oneProduct.getId()}}">
+                                    <div sec:authorize="isAuthenticated()">
+                                        <button class="buttonAddProduct" type="submit"
+                                                onclick="productAddedToShoppingCartMsg()">
+                                            <i class="fa fa-cart-plus fa-lg" style="margin: 0 auto"><p
+                                                    style="padding-top: 5px;">Купить</p></i>
+                                        </button>
+                                    </div>
+                                    <div sec:authorize="!isAuthenticated()">
+                                        <button class="buttonAddProduct" type="button"
+                                                onclick="userNeedAuthenticationMsg()">
+                                            <i class="fa fa-cart-plus fa-lg" style="margin: 0 auto"><p
+                                                    style="padding-top: 5px;">Купить</p></i>
+                                        </button>
+                                    </div>
+                                </a>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td th:utext="${#strings.replace(oneProduct.getDescription(),';','</br>')}"></td>
+                            <td class="text-center" style="vertical-align: middle"
+                                th:text="${#numbers.formatDecimal(oneProduct.getPrice(), 1, 'WHITESPACE', 2, 'POINT')}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <br>
+            </div>
         </th:block>
-        <br>
-        <div class="container">
-            <h2>Информация о продукте:</h2>
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th class="text-center" style="vertical-align: middle">Описание</th>
-                    <th class="text-center" style="vertical-align: middle">Цена, руб.</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td th:text="${oneProduct.getDescription()}"></td>
-                    <td class="text-center" style="vertical-align: middle" th:text="${oneProduct.getPrice()}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <a style="text-decoration: none"
-           th:href="@{'/cart/add?productId='+${oneProduct.getId()}}">
-            <button class="buttonAddProduct" type="submit" onclick="productAddedToShoppingCartMsg()"><i
-                    class="fa fa-cart-plus fa-lg" style="padding-right: 5px"></i>Купить
-            </button>
-        </a>
-        <br>
+
     </div>
-</th:block>
+
+    <div class="footer">
+        © Разработка интернет-магазина. Царикевич М., 2022
+    </div>
+</div>
 </body>
 </html>

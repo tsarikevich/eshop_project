@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import static by.teachmeskills.eshop.utils.EshopConstants.CATEGORY_ID;
 import static by.teachmeskills.eshop.utils.EshopConstants.CATEGORY_NAME;
 import static by.teachmeskills.eshop.utils.EshopConstants.FILE;
@@ -32,16 +29,13 @@ public class CategoryController {
     public ModelAndView openCategoryProductPage(@PathVariable String categoryName,
                                                 @PathVariable int categoryId,
                                                 @RequestParam(value = PAGE_NUMBER, defaultValue = "0") int pageNumber,
-                                                @RequestParam(value = PAGE_SIZE, defaultValue = "3") int pageSize) {
+                                                @RequestParam(value = PAGE_SIZE, defaultValue = "5") int pageSize) {
         return productService.getCategoryProductsData(categoryId, categoryName, pageNumber, pageSize);
     }
 
     @GetMapping("/download")
-    public void downloadCsvFile(HttpServletResponse response, @RequestParam(CATEGORY_ID) int id) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF8");
-        response.addHeader("Content-Disposition", "attachment; filename=productsCategory.csv");
-        productService.writeProductsCategoryToCsv(id, response.getWriter());
+    public void downloadCsvFile(HttpServletResponse response, @RequestParam(CATEGORY_ID) int id){
+        productService.writeProductsCategoryToCsv(id, response);
     }
 
     @PostMapping("/upload")

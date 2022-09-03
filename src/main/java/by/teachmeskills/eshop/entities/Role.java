@@ -1,5 +1,7 @@
 package by.teachmeskills.eshop.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,13 +18,15 @@ import java.util.Set;
 
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @ToString
+@EqualsAndHashCode(callSuper = true,exclude = "users")
 @Table(name = "roles")
 public class Role extends BaseEntity implements GrantedAuthority {
-    @Column(name = "NAME",unique = true)
+    @Column(name = "name",unique = true)
     private String role;
 
     @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)

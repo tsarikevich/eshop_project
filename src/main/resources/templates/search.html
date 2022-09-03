@@ -7,131 +7,197 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/select.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/search.css}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<ul class="TopNavMenu">
-    <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
-    <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
-        Корзина</a></li>
-    <div sec:authorize="isAnonymous()">
-        <li style="float:right">
-            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
-        </li>
-    </div>
-    <div sec:authorize="isAuthenticated()">
-        <li style="float:right">
-            <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${user.getLogin()}]]</a>
-        </li>
-    </div>
-    <th:block th:switch="${activeButtonNavMenu}">
-        <li style="float:right" th:case="true"><a class="active" th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
-            Поиск</a></li>
-        <li style="float:right" th:case="false"><a th:href="@{/search}"><i class="fa fa-fw fa-search"></i> Поиск</a>
-        </li>
-    </th:block>
-</ul>
-<div class="container-fluid">
-    <form th:method="post" th:action="@{/search}" >
-        <input id="inpSearchLbl" th:type="search" placeholder="Поиск по названию или описанию товара..."
-               th:name="searchKey" th:value="${searchParams?.getSearchKey()}">
-
-        <div class="row">
-            <div class="col-sm-4" style="background-color:lavender;">
-                <select name="categoryName">
-
-                    <th:block th:if="*{#strings.isEmpty(searchParams?.getCategoryName())}">
-                        <option selected th:value="' '" th:text="'Не выбрано'"></option>
-                    </th:block>
-                    <th:block th:if="*{not #strings.isEmpty(searchParams?.getCategoryName())}">
-                        <option selected th:value="${searchParams?.getCategoryName()}">[[*{searchParams?.getCategoryName()}]]</option>
-                    </th:block>
-                    <option value="Mobile phones">Mobile phones</option>
-                    <option value="Laptops">Laptops</option>
-                    <option value="GPS Navigators">GPS Navigators</option>
-                    <option value="Fridges">Fridges</option>
-                    <option value="Cars">Cars</option>
-                    <option value="Cameras">Cameras</option>
-                    <option value="">Не выбрано</option>
-                </select><br>
-                <input id="minPrice" type="number" min="0" placeholder="цена от" name="minPrice"
-                       th:value="${searchParams?.getMinPrice()}">
-                <input id="maxPrice" type="number" min="0" placeholder="цена до" name="maxPrice"
-                       th:value="${searchParams?.getMaxPrice()}">
-                <a th:href="@{'/search?searchKey='+${searchParams?.getSearchKey()}+'&categoryName='+${searchParams?.getCategoryName()}+'&minPrice='+${searchParams?.getMinPrice()}+'&maxPrice='+${searchParams?.getMaxPrice()}}">
-                    <button id="searchBtn" type="submit">Применить</button>
-                </a>
+<div class="wrapper">
+    <div class="top">
+        <ul class="TopNavMenu">
+            <li><a th:href="@{/home}"><i class="fa fa-fw fa-home"></i> Главная</a></li>
+            <li><a class="active" th:href="@{/search}"><i class="fa fa-fw fa-search"></i>
+                Поиск</a></li>
+            <li style="float:right"><a th:href="@{/cart}"><i class="fa fa-fw fa-shopping-cart"></i>
+                Корзина</a></li>
+            <div sec:authorize="isAnonymous()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i> Пользователь</a>
+                </li>
             </div>
-    </form>
+            <div sec:authorize="isAuthenticated()">
+                <li style="float:right">
+                    <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${authUserLogin}]]</a>
+                </li>
+            </div>
 
 
-    <div class="col-sm-8" style="background-color:lavenderblush;">
-        <th:block th:if="${not #lists.isEmpty(foundProducts)}">
-            <h3><p class="text-center">Найденные продукты по вашему запросу:</p></h3>
-            <th:block th:each="product:${foundProducts}">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-1" style="background-color:white;">
-                            <th:block th:each="image:${foundImages}">
-                                <th:block th:if="${product.getId()==image.product.getId()}">
-                                    <a th:href="@{'/product/'+${product.getId()}}">
-                                        <img th:src="@{'/images/'+${image.getImagePath()}}"
-                                             th:alt="${image.getImagePath()}" class="responsive"></a>
+        </ul>
+        <div class="container-fluid">
+
+
+            <form th:method="post" th:action="@{/search}">
+                <div id="searchInputWithBtn">
+                    <input id="inpSearchLbl" th:type="search" placeholder="Поиск по названию или описанию товара..."
+                           th:name="searchKey" th:value="${searchParams?.getSearchKey()}">
+                    <button class="navSearchButton" type="submit"><i class="fa fa-search" style="margin-right: 5px"></i>Поиск
+                    </button>
+                </div>
+
+
+                <div class="row">
+                    <div id="filter" class="col-2">
+                        <div id=divSelect>
+                            <select id=searchSelect name="categoryName">
+                                <th:block th:if="*{#strings.isEmpty(searchParams?.getCategoryName())}">
+                                    <option selected th:value="' '" th:text="'Не выбрано'"></option>
                                 </th:block>
-                            </th:block>
+                                <th:block th:if="*{not #strings.isEmpty(searchParams?.getCategoryName())}">
+                                    <option selected th:value="${searchParams?.getCategoryName()}">
+                                        [[*{searchParams?.getCategoryName()}]]
+                                    </option>
+                                </th:block>
+                                <option value="Мобильные телефоны">Мобильные телефоны</option>
+                                <option value="Ноутбуки">Ноутбуки</option>
+                                <option value="GPS навигаторы">GPS навигаторы</option>
+                                <option value="Холодильники">Холодильники</option>
+                                <option value="Телевизоры">Телевизоры</option>
+                                <option value="Фотоаппараты">Фотоаппараты</option>
+                                <option value="Кондиционеры">Кондиционеры</option>
+                                <option value="Автомобили">Автомобили</option>
+                                <option value="Посудомоечные машины">Посудомоечные машины</option>
+                                <option value="Обогреватели">Обогреватели</option>
+                                <option value="Вытяжки">Вытяжки</option>
+                                <option value="Утюги">Утюги</option>
+                                <option value="Микроволновые печи">Микроволновые печи</option>
+                                <option value="Самокаты">Самокаты</option>
+                                <option value="Пылесосы">Пылесосы</option>
+                                <option value="Стиральные машины">Телевизоры</option>
+                                <option value="Часы">Фотоаппараты</option>
+                                <option value="Наушники">Наушники</option>
+                                <option value="">Не выбрано</option>
+                            </select>
                         </div>
-                        <div class="col" style="background-color:white;">
-                            <p><b class="font-italic">Модель:</b> [[${product.getName()}]]</p>
-                            <p><b class="font-italic">Описание:</b> [[${product.getDescription()}]]</p>
-                            <p><b class="font-italic">Цена:</b> [[${product.getPrice()}]] руб.</p>
+                        <input id="minPrice" type="number" min="0" placeholder="цена от" name="minPrice"
+                               th:value="${searchParams?.getMinPrice()}">
+                        <input id="maxPrice" type="number" min="0" placeholder="цена до" name="maxPrice"
+                               th:value="${searchParams?.getMaxPrice()}">
+                        <a th:href="@{'/search?searchKey='+${searchParams?.getSearchKey()}+'&categoryName='+${searchParams?.getCategoryName()}+'&minPrice='+${searchParams?.getMinPrice()}+'&maxPrice='+${searchParams?.getMaxPrice()}}">
+                            <button id="searchBtn" type="submit">Применить</button>
+                        </a>
+                    </div>
+            </form>
+
+
+            <div class="col-10" style="url('/images/background.jpg') repeat;">
+                <th:block th:if="${not #lists.isEmpty(foundProducts)}">
+                    <h3 class="text-center" style="font-family: 'Open Sans Condensed'">Найденные товары по вашему
+                        запросу:</h3>
+                    <div class="row" style="float: right;margin: 0 50px">
+                        <div style="margin-right: 10px">показать по:</div>
+                        <div class="myBox">
+
+                            <select onchange="location=value">
+                                <th:block th:if="${pageSize>=totalElements}">
+                                    <option selected th:text="Все"></option>
+                                </th:block>
+                                <th:block th:if="${pageSize<totalElements}">
+                                    <option selected th:text="${pageSize}"></option>
+                                </th:block>
+                                <option th:value="@{'/search/result?pageNumber=0&pageSize=10&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}"
+                                        th:text="10"></option>
+                                <option th:value="@{'/search/result?pageNumber=0&pageSize=20&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}"
+                                        th:text="20"></option>
+                                <option th:value="@{'/search/result?pageNumber=0&pageSize=50&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}"
+                                        th:text="50"></option>
+                                <option th:value="@{'/search/result?pageNumber=0&pageSize='+${totalElements}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}"
+                                        th:text="Все"></option>
+                            </select>
+
                         </div>
                     </div>
-                </div>
-            </th:block>
+                    <br style="margin-bottom: 10px">
+                    <th:block th:each="product:${foundProducts}">
+                        <table style="margin: 15px auto">
+                            <tr id=searchTr>
+                                <td>
+                                    <th:block th:each="image:${product.getImages()}">
+                                        <th:block th:if="${image.isPrimaryFlag()}">
+                                            <a th:href="@{'/product/'+${product.getId()}}">
+                                                <img id="searchImg" th:src="@{'/images/'+${image.getImagePath()}}"
+                                                     th:alt="${image.getImagePath()}" class="card-img"></a>
+                                        </th:block>
+                                    </th:block>
+                                </td>
+                                <td id="searchDesc">
+                                    <p><b class="font-italic">Модель:</b> [[${product.getName()}]]</p>
+
+                                    <p style="text-align: justify"><b class="font-italic">Описание: </b>
+                                        <th:block
+                                                th:text="${#strings.replace(product.getDescription(),':',' -')}">
+                                        </th:block>
+                                    </p>
+                                    <p><b class="font-italic">Цена:</b>
+                                        [[${#numbers.formatDecimal(product.getPrice(), 1, 'WHITESPACE', 2, 'POINT')}]]
+                                        руб.</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </th:block>
 
 
-            <nav aria-label>
-                <ul class="pagination justify-content-center">
-                    <th:block th:switch="${isFirstPage}">
-                        <li th:case="false" class="page-item">
-                            <form method="post"
-                                  th:action="@{'/search?pageNumber='+${pageNumber-1}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
-                                <button type="submit" class="page-link">Предыдущая</button>
-                            </form>
-                        </li>
-                        <li th:case="true" class="page-item disabled"><a class="page-link">Предыдущая</a>
-                        </li>
-                    </th:block>
-                    <th:block th:each="i: ${#numbers.sequence(0, totalPages-1)}">
-                        <th:block th:switch="${pageNumber eq i}">
-                            <li th:case="true" class="page-item">
-                                <a class="page-link active" th:text="${i+1}"></a>
-                            </li>
-                            <li th:case="false" class="page-item">
-                                <form method="post"
-                                      th:action="@{'/search?pageNumber='+${i}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
-                                    <button type="submit" class="page-link" th:text="${i+1}"></button>
-                                </form>
-                            </li>
-                        </th:block>
-                    </th:block>
-                    <th:block th:switch="${isLastPage}">
-                        <li th:case="false" class="page-item">
-                            <form method="post"
-                                  th:action="@{'/search?pageNumber='+${pageNumber+1}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
-                                <button type="submit" class="page-link">Предыдущая</button>
-                            </form>
-                        </li>
-                        <li th:case="true" class="page-item disabled"><a class="page-link">Следующая</a>
-                        </li>
-                    </th:block>
-                </ul>
-            </nav>
-        </th:block>
+                    <nav aria-label style="margin-top: 10px">
+                        <ul class="pagination justify-content-center">
+                            <th:block th:switch="${isFirstPage}">
+                                <li th:case="false" class="page-item">
+                                    <a class="page-link" style="color: black"
+                                       th:href="@{'/search/result?pageNumber='+${pageNumber-1}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
+                                        Предыдущая</a>
+                                    </form>
+                                </li>
+                                <li th:case="true" class="page-item disabled"><a class="page-link">Предыдущая</a>
+                                </li>
+                            </th:block>
+                            <th:block th:each="i: ${#numbers.sequence(0, totalPages-1)}">
+                                <th:block th:switch="${pageNumber eq i}">
+                                    <li th:case="true" class="page-item">
+                                        <a class="page-link active" th:text="${i+1}" style="color: white"></a>
+                                    </li>
+                                    <li th:case="false" class="page-item">
+
+                                        <a class="page-link" style="color: black"
+                                           th:href="@{'/search/result?pageNumber='+${i}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
+                                            [[${i+1}]]</a>
+                                    </li>
+                                </th:block>
+                            </th:block>
+                            <th:block th:switch="${isLastPage}">
+                                <li th:case="false" class="page-item">
+
+                                    <a class="page-link" style="color: black"
+                                       th:href="@{'/search/result?pageNumber='+${pageNumber+1}+'&pageSize='+${pageSize}+'&searchKey='+${searchParams.getSearchKey()}+'&categoryName='+${searchParams.getCategoryName()}+'&minPrice='+${searchParams.getMinPrice()}+'&maxPrice='+${searchParams.getMaxPrice()}}">
+                                        Следующая</a>
+
+                                </li>
+                                <li th:case="true" class="page-item disabled"><a class="page-link">Следующая</a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </nav>
+                </th:block>
+                <th:block th:if="${#lists.isEmpty(foundProducts)}">
+                    <h3 class="text-center" style="font-family: 'Open Sans Condensed'">Введите запрос для поиска товаров</h3>
+                </th:block>
+            </div>
+
+        </div>
     </div>
+</div>
 
+<div class="footer">
+    © Разработка интернет-магазина. Царикевич М., 2022
 </div>
 </div>
 </body>

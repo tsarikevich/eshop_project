@@ -1,6 +1,7 @@
 package by.teachmeskills.eshop.entities;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,28 +21,31 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @SuperBuilder
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(callSuper = true, exclude = "user")
 @Table(name = "orders")
 public class Order extends BaseEntity {
     @CsvBindByName
-    @Column(name = "PRICE")
+    @Column(name = "price")
     private BigDecimal price;
-    @Column(name = "DATE")
+
+    @Column(name = "date")
     @CsvBindByName
     private LocalDateTime date;
+
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
     @CsvBindByName
     @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyJoinColumn(table ="ORDER_PRODUCTS", name = "PRODUCT_ID")
-    @Column(name = "QUANTITY", nullable = false)
+    @MapKeyJoinColumn(table = "order_products", name = "product_id")
+    @Column(name = "quantity", nullable = false)
     private Map<Product, Integer> products = new HashMap<>();
 
     public Map<Product, Integer> getProducts() {
@@ -54,20 +58,6 @@ public class Order extends BaseEntity {
 
     public void removeItem(Product product) {
         products.computeIfPresent(product, (k, v) -> v > 1 ? v - 1 : null);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Order order = (Order) o;
-        return Objects.equals(price, order.price) && Objects.equals(date, order.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), price, date);
     }
 
     @Override

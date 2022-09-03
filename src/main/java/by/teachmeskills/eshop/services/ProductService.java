@@ -5,7 +5,7 @@ import by.teachmeskills.eshop.entities.Product;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.Writer;
+import javax.servlet.http.HttpServletResponse;
 
 public interface ProductService extends BaseService<Product> {
     ModelAndView showSearchProductPage();
@@ -16,7 +16,7 @@ public interface ProductService extends BaseService<Product> {
 
     ModelAndView searchProducts(SearchParamsDto searchParamsDto, int pageNumber, int pageSize);
 
-    void writeProductsCategoryToCsv(int categoryId, Writer writer);
+    void writeProductsCategoryToCsv(int categoryId, HttpServletResponse response);
 
     void saveProductsCategoryFromCsv(int id, MultipartFile file);
 }

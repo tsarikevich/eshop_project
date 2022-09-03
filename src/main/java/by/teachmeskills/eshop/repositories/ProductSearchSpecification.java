@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductSearchSpecification implements Specification<Product> {
-    private SearchParamsDto searchParamsDto;
+    private final SearchParamsDto searchParamsDto;
 
     public ProductSearchSpecification(SearchParamsDto searchParamsDto) {
         this.searchParamsDto = searchParamsDto;
