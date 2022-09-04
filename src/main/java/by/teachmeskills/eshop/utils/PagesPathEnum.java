@@ -13,7 +13,7 @@ public enum PagesPathEnum {
     CART_PAGE("cart"),
     SEARCH_PAGE("search"),
     USERS_PAGE("users"),
-    ERROR_PAGE("error");
+    ERROR_PAGE("errorPage");
     private final String path;
 
     PagesPathEnum(String path) {

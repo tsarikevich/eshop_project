@@ -62,7 +62,7 @@
                                 <p><b class="font-italic">Модель:</b> [[${myProduct.key.getName()}]]</p>
                                 <p style="text-align: justify"><b class="font-italic">Описание: </b>
                                     <th:block
-                                            th:text="${#strings.toLowerCase(myProduct.key.getDescription()).replace(':','')}">
+                                            th:text="${#strings.replace(myProduct.key.getDescription(),':',' -')}">
                                     </th:block>
                                 </p>
                                 <p><b class="font-italic">Цена:</b> [[${#numbers.formatDecimal(myProduct.key.getPrice(),
