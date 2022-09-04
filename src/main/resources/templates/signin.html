@@ -21,20 +21,12 @@
         <div id="signinLbl">
             Вход
         </div>
-        <!--        <input id="login" type="text" placeholder="Логин" name="login" onclick="validateLogin()">-->
-        <!--        <span class="error" th:text="${loginError}"></span>-->
-        <!--        <span id="loginError" style="display: none;">*Поле 'Логин' не заполнено!</span>-->
-        <!--        <input id="password" type="text" placeholder="Пароль" name="password" onclick="validatePass()">-->
-        <!--        <span class="error" th:text="${passwordError}"></span>-->
-        <!--        <span id="passwordError" style="display: none;">*Поле 'Пароль' не заполнено!</span>-->
-        <!--            <button id="signinBtn" type="submit">Войти</button>-->
-
         <input type="text" id="login" class="form-control" style="margin-right: auto;margin-left: auto"
                placeholder="Логин"
                name="login" required>
         <div class="invalid-feedback" style="font-size: 17px">Поле 'Логин' не заполнено!</div>
 
-        <input type="text" id="password" class="form-control"
+        <input type="password" id="password" class="form-control"
                style="margin-right: auto;margin-left: auto;margin-top: 30px;"
                placeholder="Пароль"
                name="password" required>

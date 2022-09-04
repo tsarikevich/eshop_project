@@ -32,12 +32,8 @@
                     <a th:href="@{/profile}"><i class="fa fa-fw fa-user"></i>[[${authUserLogin}]]</a>
                 </li>
             </div>
-
-
         </ul>
         <div class="container-fluid">
-
-
             <form th:method="post" th:action="@{/search}">
                 <div id="searchInputWithBtn">
                     <input id="inpSearchLbl" th:type="search" placeholder="Поиск по названию или описанию товара..."
@@ -45,7 +41,6 @@
                     <button class="navSearchButton" type="submit"><i class="fa fa-search" style="margin-right: 5px"></i>Поиск
                     </button>
                 </div>
-
 
                 <div class="row">
                     <div id="filter" class="col-2">
@@ -89,7 +84,6 @@
                         </a>
                     </div>
             </form>
-
 
             <div class="col-10" style="url('/images/background.jpg') repeat;">
                 <th:block th:if="${not #lists.isEmpty(foundProducts)}">

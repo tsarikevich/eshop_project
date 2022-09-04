@@ -57,7 +57,6 @@
                 th:text="${oneProduct.getName()}"></h3><br>
             <div class="container-fluid" >
 
-
                 <div id="carouselControls" class="carousel slide" data-ride="carousel">
                     <th:block th:if="${oneProduct.getImages().size()>=3}">
                         <ol class="carousel-indicators">
@@ -92,7 +91,6 @@
                         </a>
                     </th:block>
                 </div>
-
 
                 <div style="display: inline-block;width: auto;height: 30px;margin-top: 35px">
                     <th:block th:each="image,stat:${oneProduct.getImages()}">
